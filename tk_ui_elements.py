@@ -23,7 +23,7 @@ def setup_material_theme(style_instance=None):
     
     # Frame styles
     style.configure("TFrame", 
-                    background=config.COLOR_BACKGROUND)
+                    background=config.COLOR_BACKGROUND) # Default frame background
     
     style.configure("Card.TFrame",
                     background=config.COLOR_SURFACE, # Cards have a distinct surface color
@@ -39,29 +39,33 @@ def setup_material_theme(style_instance=None):
                     background=config.COLOR_BACKGROUND, # Default label on main background
                     foreground=config.COLOR_TEXT_PRIMARY)
     
-    style.configure("Card.TLabel", # Labels inside a Card.TFrame
+    # Labels inside a Card.TFrame should use the Card's surface color
+    style.configure("Card.TLabel", 
                     font=config.FONT_BODY,
                     background=config.COLOR_SURFACE,
                     foreground=config.COLOR_TEXT_PRIMARY)
 
     style.configure("Title.TLabel",
                     font=config.FONT_TITLE,
-                    background=config.COLOR_SURFACE, # Titles often on cards/headers
+                    background=config.COLOR_SURFACE, 
                     foreground=config.COLOR_TEXT_PRIMARY)
                     
     style.configure("Subtitle.TLabel",
                     font=config.FONT_SUBTITLE,
-                    background=config.COLOR_SURFACE, # Subtitles often on cards
+                    background=config.COLOR_SURFACE, 
                     foreground=config.COLOR_TEXT_SECONDARY)
     
+    # For Caption.TLabel, ensure it can be on TFrame (main background) or Card.TFrame (surface background)
+    # We will handle this by applying Card.TLabel if its parent is a Card.TFrame, otherwise TLabel.
+    # Or, define a specific Caption.TLabel that assumes its parent's background.
     style.configure("Caption.TLabel",
                     font=config.FONT_CAPTION,
-                    background=config.COLOR_SURFACE, # Captions often on cards
-                    foreground=config.COLOR_TEXT_SECONDARY)
+                    # background will be inherited or set if parent is Card.TFrame
+                    foreground=config.COLOR_TEXT_SECONDARY) 
     
     # LabelFrame styles (used for grouping controls)
     style.configure("TLabelframe", 
-                    background=config.COLOR_SURFACE, # LabelFrames are like cards
+                    background=config.COLOR_SURFACE, 
                     relief="solid",
                     borderwidth=1,
                     padding=config.SPACING_MEDIUM)
@@ -72,7 +76,7 @@ def setup_material_theme(style_instance=None):
                     font=config.FONT_SUBTITLE,
                     background=config.COLOR_SURFACE,
                     foreground=config.COLOR_TEXT_PRIMARY,
-                    padding=(0,0,0,config.SPACING_SMALL)) # Padding below label text
+                    padding=(0,0,0,config.SPACING_SMALL)) 
     
     # Button styles
     style.configure("TButton", 
@@ -80,7 +84,7 @@ def setup_material_theme(style_instance=None):
                     padding=(config.SPACING_MEDIUM, config.SPACING_SMALL),
                     relief="raised",
                     borderwidth=1,
-                    focusthickness=1) # Standard button appearance
+                    focusthickness=1) 
     style.map("TButton",
               background=[('active', config.COLOR_BACKGROUND_LIGHT), 
                           ('!disabled', config.COLOR_SURFACE)],
@@ -106,7 +110,7 @@ def setup_material_theme(style_instance=None):
     # Radio button styles
     style.configure("TRadiobutton",
                     font=config.FONT_BODY,
-                    background=config.COLOR_SURFACE, # Radiobuttons usually within a card/labelframe
+                    background=config.COLOR_SURFACE, 
                     foreground=config.COLOR_TEXT_PRIMARY,
                     indicatorrelief="flat",
                     indicatormargin=config.SPACING_SMALL,
@@ -119,9 +123,9 @@ def setup_material_theme(style_instance=None):
     # Scale/Slider styles
     style.configure("TScale",
                     troughcolor=config.COLOR_BACKGROUND_LIGHT,
-                    background=config.COLOR_SURFACE, # Sliders usually within a card
+                    background=config.COLOR_SURFACE, 
                     sliderrelief="raised",
-                    sliderthickness=18, # Make slider handle a bit larger
+                    sliderthickness=18, 
                     borderwidth=1)
     style.map("TScale",
               background=[('active', config.COLOR_PRIMARY_LIGHT), ('disabled', config.COLOR_BACKGROUND_LIGHT)],
@@ -131,18 +135,17 @@ def setup_material_theme(style_instance=None):
     style.configure("TProgressbar",
                     troughcolor=config.COLOR_BACKGROUND_LIGHT,
                     background=config.COLOR_SECONDARY, 
-                    thickness=config.SPACING_MEDIUM) # Make progress bar thicker
+                    thickness=config.SPACING_MEDIUM) 
     
-    # Overlay styles (used by LoadingOverlay)
     style.configure("Overlay.TFrame", 
-                    background=config.OVERLAY_FRAME_COLOR, # Use specific overlay frame color
+                    background=config.OVERLAY_FRAME_COLOR, 
                     relief="solid", borderwidth=1)
     style.map("Overlay.TFrame", bordercolor=[('active', config.COLOR_PRIMARY_LIGHT)])
 
     style.configure("Overlay.TLabel", 
                     background=config.OVERLAY_FRAME_COLOR, 
                     foreground=config.COLOR_TEXT_PRIMARY,
-                    font=config.FONT_MESSAGE_OVERLAY) # Use specific font for overlay message
+                    font=config.FONT_MESSAGE_OVERLAY) 
     
     return style
 
@@ -151,17 +154,16 @@ class RedirectText:
     """Class to redirect stdout/stderr to a tkinter Text widget"""
     def __init__(self, text_widget):
         self.text_widget = text_widget
-        self.text_widget.config(state=tk.DISABLED) # Ensure it's initially disabled
+        self.text_widget.config(state=tk.DISABLED) 
         
     def write(self, string_to_write):
-        if not self.text_widget.winfo_exists(): return # Avoid error if widget destroyed
+        if not self.text_widget.winfo_exists(): return 
         self.text_widget.config(state=tk.NORMAL)
         self.text_widget.insert(tk.END, string_to_write)
-        self.text_widget.see(tk.END) # Scroll to the end
+        self.text_widget.see(tk.END) 
         self.text_widget.config(state=tk.DISABLED)
         
     def flush(self):
-        # Tkinter Text widget updates immediately, so flush is usually a no-op.
         pass
 
 
@@ -169,10 +171,10 @@ class LoadingOverlay(tk.Toplevel):
     """Loading overlay that blocks interaction with the main window"""
     def __init__(self, parent_window, message="Loading..."):
         super().__init__(parent_window)
-        self.parent_window_ref = parent_window # Store reference
+        self.parent_window_ref = parent_window 
         self.animation_job_id = None 
         
-        self.title("") # No title bar for overlay
+        self.title("") 
         
         parent_window.update_idletasks() 
         self.geometry(f"{parent_window.winfo_width()}x{parent_window.winfo_height()}+{parent_window.winfo_x()}+{parent_window.winfo_y()}")
@@ -359,14 +361,13 @@ def create_ui_components(root_window, parent_left_panel, parent_right_panel):
     
     sliders_frame = ttk.LabelFrame(parent_left_panel, text="Detection Thresholds", style="TLabelframe")
     
-    # IoU Threshold - using grid for alignment
-    iou_sub_frame = ttk.Frame(sliders_frame) # Plain frame for grid layout
+    iou_sub_frame = ttk.Frame(sliders_frame) 
     iou_sub_frame.pack(fill="x", pady=config.SPACING_SMALL, padx=config.SPACING_SMALL)
-    iou_sub_frame.columnconfigure(0, weight=0)  # Label
-    iou_sub_frame.columnconfigure(1, weight=1)  # Slider
-    iou_sub_frame.columnconfigure(2, weight=0)  # Value
+    iou_sub_frame.columnconfigure(0, weight=0)  
+    iou_sub_frame.columnconfigure(1, weight=1)  
+    iou_sub_frame.columnconfigure(2, weight=0)  
 
-    iou_label_text = ttk.Label(iou_sub_frame, text="IoU:", style="Card.TLabel") # Use Card.TLabel if sliders_frame is Card-like
+    iou_label_text = ttk.Label(iou_sub_frame, text="IoU:", style="Card.TLabel") 
     iou_var = tk.DoubleVar(value=config.DEFAULT_IOU_THRESHOLD)
     iou_slider_widget = ttk.Scale(iou_sub_frame, from_=0.01, to=1.0, orient="horizontal", variable=iou_var, state="disabled")
     iou_value_display_label = ttk.Label(iou_sub_frame, text=f"{config.DEFAULT_IOU_THRESHOLD:.2f}", style="Card.TLabel", width=4, anchor="e")
@@ -375,12 +376,11 @@ def create_ui_components(root_window, parent_left_panel, parent_right_panel):
     iou_slider_widget.grid(row=0, column=1, sticky="ew", padx=config.SPACING_SMALL)
     iou_value_display_label.grid(row=0, column=2, sticky="e")
 
-    # Confidence Threshold - using grid for alignment
-    conf_sub_frame = ttk.Frame(sliders_frame) # Plain frame for grid layout
+    conf_sub_frame = ttk.Frame(sliders_frame) 
     conf_sub_frame.pack(fill="x", pady=config.SPACING_SMALL, padx=config.SPACING_SMALL)
-    conf_sub_frame.columnconfigure(0, weight=0)  # Label
-    conf_sub_frame.columnconfigure(1, weight=1)  # Slider
-    conf_sub_frame.columnconfigure(2, weight=0)  # Value
+    conf_sub_frame.columnconfigure(0, weight=0)  
+    conf_sub_frame.columnconfigure(1, weight=1)  
+    conf_sub_frame.columnconfigure(2, weight=0)  
 
     conf_label_text = ttk.Label(conf_sub_frame, text="Conf:", style="Card.TLabel")
     conf_var = tk.DoubleVar(value=config.DEFAULT_CONF_THRESHOLD)
@@ -403,16 +403,23 @@ def create_ui_components(root_window, parent_left_panel, parent_right_panel):
     output_frame = ttk.LabelFrame(parent_right_panel, text="Console Output", style="TLabelframe")
 
     video_display_widget = VideoDisplayFrame(video_player_container_frame, style="TFrame")
-    video_controls_subframe = ttk.Frame(video_player_container_frame, style="Card.TFrame")
+    
+    # Video controls (Play/Pause, Stop) - Parented to video_player_container_frame
+    video_controls_subframe = ttk.Frame(video_player_container_frame, style="TFrame") # Changed from Card.TFrame
     play_pause_button_widget = ttk.Button(video_controls_subframe, text="Play", style="Primary.TButton", state="disabled")
     stop_button_widget = ttk.Button(video_controls_subframe, text="Stop", style="Secondary.TButton", state="disabled")
     play_pause_button_widget.pack(side="left", padx=(0, config.SPACING_MEDIUM))
     stop_button_widget.pack(side="left")
     
-    progress_subframe = ttk.Frame(video_player_container_frame, style="Card.TFrame")
-    progress_var = tk.IntVar(value=0)
-    progress_slider_widget = ttk.Scale(progress_subframe, from_=0, to=100, orient="horizontal", variable=progress_var, state="disabled")
-    time_display_label = ttk.Label(progress_subframe, text="00:00 / 00:00", style="Caption.TLabel", width=12, anchor="e")
+    # Video progress slider and time label - Parented to video_player_container_frame
+    progress_subframe = ttk.Frame(video_player_container_frame, style="TFrame") # Changed from Card.TFrame
+    progress_var = tk.IntVar(value=0) 
+    progress_slider_widget = ttk.Scale(
+        progress_subframe, from_=0, to=100, orient="horizontal", variable=progress_var, state="disabled"
+    )
+    # Ensure time_display_label uses a style that matches TFrame's background (main app background)
+    time_display_label = ttk.Label(progress_subframe, text="00:00 / 00:00", style="TLabel", width=12, anchor="e") 
+    
     progress_slider_widget.pack(side="left", expand=True, fill="x", padx=(0, config.SPACING_MEDIUM))
     time_display_label.pack(side="left")
 
@@ -454,10 +461,10 @@ def create_ui_components(root_window, parent_left_panel, parent_right_panel):
         "fast_progress_var": fast_progress_var,
         "video_player_container": video_player_container_frame,
         "video_display": video_display_widget,
-        "video_controls_frame": video_controls_subframe,
+        "video_controls_frame": video_controls_subframe, 
         "play_pause_button": play_pause_button_widget,
         "stop_button": stop_button_widget,
-        "progress_frame": progress_subframe,
+        "progress_frame": progress_subframe, 
         "progress_slider": progress_slider_widget,
         "progress_var": progress_var,
         "time_label": time_display_label

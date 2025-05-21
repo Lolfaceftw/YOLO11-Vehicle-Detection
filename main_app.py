@@ -17,8 +17,10 @@ from .model_loader import (
     get_default_model_key,
     # AVAILABLE_MODELS # Not directly used here
 )
-from .tk_ui_elements import create_ui_components # Signature will change
-from .tk_ui_callbacks import init_callbacks, show_loading, hide_loading_and_update_controls
+from .tk_ui_elements import create_ui_components 
+# Corrected imports for loading manager functions
+from ._ui_loading_manager import show_loading, hide_loading_and_update_controls
+from .tk_ui_callbacks import init_callbacks
 
 
 def setup_model_selector(ui_components_dict):
@@ -36,24 +38,19 @@ def setup_model_selector(ui_components_dict):
     if not model_keys:
         log_debug("CRITICAL: No models defined in AVAILABLE_MODELS.")
         sys.stderr.write("CRITICAL ERROR: No models configured. Application cannot start.\n")
-        # Access root window via a known key if passed in ui_components_dict or handle error display differently
-        # For now, relying on stderr and early exit.
-        # if "root_window" in ui_components_dict and ui_components_dict["root_window"]:
-        #     messagebox.showerror("Startup Error", "No models configured. Application cannot start.", parent=ui_components_dict["root_window"])
         return False 
     
-    model_selector_frame = ui_components_dict["model_selector_frame"] # This is now correctly parented to left_panel
+    model_selector_frame = ui_components_dict["model_selector_frame"] 
     model_var = ui_components_dict["model_var"]
     
-    # Clear existing buttons if any (e.g., if this function could be called multiple times)
     for widget in model_selector_frame.winfo_children():
-        if isinstance(widget, ttk.Radiobutton): # Be specific
+        if isinstance(widget, ttk.Radiobutton): 
             widget.destroy()
-    ui_components_dict["model_buttons"] = [] # Reset the list
+    ui_components_dict["model_buttons"] = [] 
 
     for i, model_key in enumerate(model_keys):
         rb = ttk.Radiobutton(
-            model_selector_frame, # Parent is model_selector_frame
+            model_selector_frame, 
             text=model_key,
             variable=model_var,
             value=model_key
@@ -79,33 +76,18 @@ def place_ui_components_in_layout(left_panel_ref, right_panel_ref, ui_components
     """
     log_debug("Placing UI components into layout...")
 
-    # --- Layout for left panel controls (children of left_panel_ref) ---
-    # These components were created with left_panel_ref as parent in create_ui_components.
-    # Their .pack() method will place them within left_panel_ref.
     ui_components_dict["file_upload_frame"].pack(fill="x", pady=(0, config.SPACING_MEDIUM), anchor="n")
     ui_components_dict["process_buttons_frame"].pack(fill="x", pady=(0, config.SPACING_MEDIUM), anchor="n")
     ui_components_dict["model_selector_frame"].pack(fill="x", pady=(0, config.SPACING_MEDIUM), anchor="n")
     ui_components_dict["sliders_frame"].pack(fill="x", pady=(0, config.SPACING_MEDIUM), anchor="n")
-    # fast_progress_frame is also a child of left_panel_ref; its visibility is managed by callbacks.
-    # It's created in tk_ui_elements with parent_left_panel. Callbacks will pack/unpack it there.
 
-
-    # --- Layout for right panel (children of right_panel_ref) ---
-    # Configure row/column weights for right_panel_ref itself
-    right_panel_ref.rowconfigure(0, weight=1)  # video_player_container will go here
-    right_panel_ref.rowconfigure(1, weight=0, minsize=100) # output_frame will go here
+    right_panel_ref.rowconfigure(0, weight=1)  
+    right_panel_ref.rowconfigure(1, weight=0, minsize=100) 
     right_panel_ref.columnconfigure(0, weight=1)
 
-    # These components were created with right_panel_ref as parent.
-    # Their .grid() method will place them within right_panel_ref.
     ui_components_dict["video_player_container"].grid(row=0, column=0, sticky="nsew", pady=(0, config.SPACING_MEDIUM))
     ui_components_dict["output_frame"].grid(row=1, column=0, sticky="ewns")
     
-    # Initial visibility of some sub-components (like video controls within video_player_container,
-    # or fast_progress_frame within left_panel) is typically handled by the first call to
-    # hide_loading_and_update_controls after the UI is fully built and callbacks are initialized.
-    # So, explicit grid_remove() or pack_forget() here might be redundant if hide_loading... covers it.
-
 
 def on_close(root_win):
     """Handle window close event.
@@ -133,14 +115,13 @@ def launch_app():
     root.minsize(700, 600) 
     root.configure(background=config.COLOR_BACKGROUND)
     
-    # Create main layout structure first
     app_frame = ttk.Frame(root, style="TFrame", padding=config.SPACING_MEDIUM)
     app_frame.pack(fill="both", expand=True)
 
     app_frame.columnconfigure(0, weight=1, minsize=280) 
     app_frame.columnconfigure(1, weight=3)              
-    app_frame.rowconfigure(0, weight=0)                 # Title row
-    app_frame.rowconfigure(1, weight=1)                 # Main content row (for left/right panels)
+    app_frame.rowconfigure(0, weight=0)                 
+    app_frame.rowconfigure(1, weight=1)                 
 
     title_frame_main = ttk.Frame(app_frame, style="Card.TFrame")
     title_frame_main.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, config.SPACING_MEDIUM))
@@ -159,11 +140,8 @@ def launch_app():
     right_panel_main = ttk.Frame(app_frame, style="TFrame")
     right_panel_main.grid(row=1, column=1, sticky="nswe")
     
-    # Now create UI components, passing the correct parent frames
     ui_components_dict = create_ui_components(root, left_panel_main, right_panel_main)
-    # ui_components_dict["root_window"] = root # Store root if needed by other parts, e.g. error dialogs
 
-    # Place the created components into the layout
     place_ui_components_in_layout(left_panel_main, right_panel_main, ui_components_dict)
     
     root.protocol("WM_DELETE_WINDOW", lambda: on_close(root))
