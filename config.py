@@ -97,8 +97,8 @@ DEFAULT_IOU_THRESHOLD = 0.45
 DEFAULT_CONF_THRESHOLD = 0.25
 
 # --- Loading Overlay Configuration ---
-OVERLAY_BACKGROUND_COLOR = '#212121'    
-OVERLAY_ALPHA = 0.85                    
+OVERLAY_BACKGROUND_COLOR = '#212121'    # Dark background color
+OVERLAY_ALPHA = 0.7                     # Reduced opacity for better visibility
 OVERLAY_FRAME_COLOR = COLOR_SURFACE     
 
 UNICODE_SPINNER_FRAMES = ["◜", "◠", "◝", "◞", "◡", "◟"]

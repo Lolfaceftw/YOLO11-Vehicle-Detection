@@ -62,7 +62,12 @@ def setup_material_theme(style_instance=None):
     style.configure("TProgressbar", troughcolor=config.COLOR_BACKGROUND_LIGHT, background=config.COLOR_SECONDARY, thickness=config.SPACING_MEDIUM)
 
     # Overlay styles
-    style.configure("Overlay.TFrame", background=config.OVERLAY_FRAME_COLOR, relief="solid", borderwidth=1)
-    style.map("Overlay.TFrame", bordercolor=[('active', config.COLOR_PRIMARY_LIGHT)])
+    style.configure("Overlay.TFrame", background=config.OVERLAY_BACKGROUND_COLOR, relief="flat", borderwidth=0)
     style.configure("Overlay.TLabel", background=config.OVERLAY_FRAME_COLOR, foreground=config.COLOR_TEXT_PRIMARY, font=config.FONT_MESSAGE_OVERLAY)
+    
+    # Enhanced content area for overlay
+    style.configure("OverlayContent.TFrame", background=config.OVERLAY_FRAME_COLOR, relief="raised", borderwidth=2)
+    style.map("OverlayContent.TFrame", 
+             background=[('active', config.OVERLAY_FRAME_COLOR)],
+             relief=[('active', 'raised')])
     return style

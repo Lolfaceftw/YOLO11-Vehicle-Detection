@@ -24,9 +24,10 @@ from app.model_loader import (
     get_available_model_keys,
     get_default_model_key,
 )
-from app.tk_ui_elements import create_ui_components
-from app._ui_loading_manager import show_loading, hide_loading_and_update_controls
-from app.tk_ui_callbacks import init_callbacks
+from .tk_ui_elements import create_ui_components
+from ._ui_loading_manager import show_loading, hide_loading_and_update_controls
+from .tk_ui_callbacks import init_callbacks
+from .ui_custom_widgets import LoadingOverlay
 
 def _initial_pack_for_sizing(widget, widget_name_for_log="widget"):
     if widget and not widget.winfo_ismapped():
@@ -80,6 +81,8 @@ def on_close(root_win, from_exception=False):
     on_close.stopping = True
     from app.tk_ui_callbacks import _stop_all_processing_logic
     _stop_all_processing_logic()
+    # Make sure the integrated loading overlay is hidden
+    LoadingOverlay.hide()
     if root_win and root_win.winfo_exists(): log_debug("Destroying root window."); root_win.destroy()
     else: log_debug("Root window does not exist or already destroyed.")
     log_debug("Application cleanup finished."); delattr(on_close, 'stopping')
@@ -127,6 +130,10 @@ def launch_app():
     ui_components_dict = create_ui_components(root, left_panel_main, right_panel_main)
     app_globals.ui_references["ui_components_dict"] = ui_components_dict
     log_debug("launch_app: ui_components_dict created and stored.")
+    
+    # Initialize the integrated LoadingOverlay with the main frame (but don't show it yet)
+    loading_overlay = LoadingOverlay.get_instance(root)
+    log_debug("launch_app: Initialized integrated LoadingOverlay.")
 
     # Ensure all potentially visible frames are explicitly forgotten before first hide_loading call
     for frame_key in ["file_upload_frame", "model_selector_frame", "process_buttons_frame", "sliders_frame", "video_player_container"]:
@@ -172,16 +179,20 @@ def launch_app():
     except:
         app_frame_padx = app_frame_pady = config.SPACING_MEDIUM * 2
 
-    # Fixed estimates for target_two_panel_size
+    # Fixed target size as per requirement (1305x805)
+    target_w, target_h = 1305, 805
+    log_debug(f"launch_app: Using fixed target size for two-panel layout: {target_w}x{target_h}")
+    
+    # We'll still calculate an estimate for reference, but won't use it directly
     fixed_left_panel_w_est = 380 
     fixed_left_panel_h_est = 450 # Approximate height for all left controls
     default_right_panel_w_est = config.DEFAULT_VIDEO_WIDTH + (config.SPACING_MEDIUM * 2) 
     default_right_panel_h_est = config.DEFAULT_VIDEO_HEIGHT + (config.SPACING_LARGE * 3) # video + controls
-    log_debug(f"launch_app: Using fixed estimates for target_two_panel_size: Left W/H={fixed_left_panel_w_est}/{fixed_left_panel_h_est}, Right W/H={default_right_panel_w_est}/{default_right_panel_h_est}")
+    log_debug(f"launch_app: Reference estimates for panel sizes: Left W/H={fixed_left_panel_w_est}/{fixed_left_panel_h_est}, Right W/H={default_right_panel_w_est}/{default_right_panel_h_est}")
     
-    two_panel_w = fixed_left_panel_w_est + config.SPACING_MEDIUM + default_right_panel_w_est + app_frame_padx + 40
-    two_panel_h = title_h + config.SPACING_MEDIUM + max(fixed_left_panel_h_est, default_right_panel_h_est) + app_frame_pady + 60
-    log_debug(f"launch_app: Calculated target_two_panel_size: {two_panel_w}x{two_panel_h}")
+    two_panel_w = target_w  # Use fixed target width
+    two_panel_h = target_h  # Use fixed target height
+    log_debug(f"launch_app: Using fixed target_two_panel_size: {two_panel_w}x{two_panel_h}")
     
     # Initial single panel size:
     single_panel_w = left_w_req + app_frame_padx + 40 
@@ -191,10 +202,13 @@ def launch_app():
     root.geometry(f"{single_panel_w}x{single_panel_h}")
     log_debug(f"launch_app: Set initial root geometry to: {single_panel_w}x{single_panel_h}")
     
-    root.minsize(single_panel_w, single_panel_h)
-    log_debug(f"launch_app: Set root minsize to: {single_panel_w}x{single_panel_h}")
+    # Set a more modest minimum size initially to allow for later resizing
+    initial_min_w, initial_min_h = 450, 350  # Conservative minimum size
+    root.minsize(initial_min_w, initial_min_h)
+    log_debug(f"launch_app: Set root minsize to: {initial_min_w}x{initial_min_h} (more flexible than initial size)")
     
-    app_globals.ui_references['target_two_panel_size'] = (two_panel_w, two_panel_h)
+    # Store target sizes for reference, but actual target size will be 1305x805 when file is uploaded
+    app_globals.ui_references['target_two_panel_size'] = (1305, 805)
 
     hide_loading_and_update_controls() 
     log_debug("launch_app: Called initial hide_loading_and_update_controls.")
@@ -202,6 +216,8 @@ def launch_app():
     default_model_to_load = ui_components_dict['model_var'].get()
     if default_model_to_load:
         log_debug(f"launch_app: Loading default model: {default_model_to_load}")
+        # Now we can use the initialized overlay
+        # Show the integrated loading overlay with model initialization message
         show_loading(f"Initializing with model: {default_model_to_load}...")
         def initial_model_load_task():
             initial_load_model(default_model_to_load)

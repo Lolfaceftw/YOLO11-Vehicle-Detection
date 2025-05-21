@@ -14,6 +14,20 @@ after_id_playback_loop = None
 real_time_fps_frames_processed = 0
 real_time_fps_last_update_time = 0.0
 real_time_fps_display_value = 0.0
+prev_fps_value = 0.0
+
+# --- Performance Tracking ---
+heavy_frame_count = 0
+frame_process_counter = 0
+skip_processing_count = 0
+
+# --- Seek Operation Tracking ---
+last_seek_requested = False  # Flag to indicate a seek was requested
+seek_in_progress = False     # Flag to indicate an active seek operation
+seek_target_frame = 0        # Target frame position for current seek
+seek_start_time = 0.0        # Timestamp when seek started
+seek_complete_callback = None  # Function to call when seek completes
+seek_lock = threading.Lock() # Lock for thread-safe seek operations
 
 # --- Global State for Fast (Batch) Video Processing ---\n",
 fast_video_processing_thread = None

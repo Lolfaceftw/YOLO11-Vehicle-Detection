@@ -21,19 +21,14 @@ def show_loading(message="Loading..."):
     if root is None: log_debug("show_loading: root_window is None. Aborting."); return
 
     root.update_idletasks() 
-    current_overlay = refs.get_loading_overlay_ref()
-    if current_overlay is not None and current_overlay.winfo_exists():
-        log_debug(f"show_loading: Updating existing overlay with message: {message}")
-        current_overlay.update_message(message); current_overlay.lift(); return
     try:
-        log_debug(f"show_loading: Creating new overlay with message: {message}")
-        if current_overlay is None or not current_overlay.winfo_exists():
-            new_overlay = LoadingOverlay(root, message); refs.set_loading_overlay_ref(new_overlay)
-            log_debug(f"show_loading: New overlay created: {new_overlay}")
-        else: 
-            current_overlay.update_message(message); current_overlay.lift()
-            log_debug(f"show_loading: (fallback) Updated existing overlay: {current_overlay}")
-    except Exception as e: log_debug(f"show_loading: Error creating/updating loading overlay: {e}", exc_info=True); print(f"Loading: {message} (Overlay Error: {e})")
+        # Use the integrated overlay
+        log_debug(f"show_loading: Showing integrated overlay with message: {message}")
+        LoadingOverlay.show(root, message)
+        log_debug(f"show_loading: Integrated overlay shown successfully")
+    except Exception as e: 
+        log_debug(f"show_loading: Error showing loading overlay: {e}", exc_info=True)
+        print(f"Loading: {message} (Overlay Error: {e})")
 
     ui_comps = app_globals.ui_references.get("ui_components_dict", {})
     if ui_comps:
@@ -56,6 +51,23 @@ def show_loading(message="Loading..."):
                 except tk.TclError: log_debug(f"show_loading: TclError disabling model button, possibly already destroyed.")
     log_debug(f"show_loading: END")
 
+def update_message(message):
+    """
+    Updates the message in the loading overlay.
+    
+    Args:
+        message (str): The new message to display
+    """
+    log_debug(f"update_message: START - {message}")
+    try:
+        # Call the LoadingOverlay's static method to update the message
+        LoadingOverlay.update(message)
+        log_debug(f"update_message: Message updated successfully to: {message}")
+    except Exception as e:
+        log_debug(f"update_message: Error updating loading message: {e}", exc_info=True)
+        print(f"Update message: {message} (Error: {e})")
+    log_debug(f"update_message: END")
+
 
 def hide_loading_and_update_controls():
     func_id = f"HLC_{time.monotonic_ns()}" 
@@ -64,9 +76,16 @@ def hide_loading_and_update_controls():
     root = app_globals.ui_references.get("root") 
     ui_comps = app_globals.ui_references.get("ui_components_dict", {})
     
-    current_overlay = refs.get_loading_overlay_ref()
-    if current_overlay is not None and current_overlay.winfo_exists(): current_overlay.destroy()
-    refs.set_loading_overlay_ref(None)
+    # Hide the integrated loading overlay
+    try:
+        log_debug(f"{func_id}: Hiding integrated loading overlay")
+        LoadingOverlay.hide()  # Use the static hide method
+    except Exception as e:
+        log_debug(f"{func_id}: Error hiding loading overlay: {str(e)}")
+        # If hide fails, try to restore window state
+        if root and root.winfo_exists():
+            root.resizable(True, True)
+            root.config(cursor="")  # Reset cursor to default
 
     if not ui_comps or not app_globals.ui_references: log_debug(f"{func_id}: ui_comps or ui_references not available."); return
     if root is None or not root.winfo_exists(): log_debug(f"{func_id}: root_window not available."); return
@@ -114,8 +133,8 @@ def hide_loading_and_update_controls():
         last_packed_widget = file_upload_frame
     
     if model_selector_frame:
-        if model_loaded and not is_fast_processing:
-            log_debug(f"{func_id}: Packing model_selector_frame.")
+        if model_loaded and not is_fast_processing and file_uploaded:
+            log_debug(f"{func_id}: Packing model_selector_frame. (File uploaded)")
             model_selector_frame.pack(fill="x", pady=(0, config.SPACING_MEDIUM), anchor="n", after=last_packed_widget)
             last_packed_widget = model_selector_frame
             log_debug(f"{func_id}: Packing radiobuttons within model_selector_frame.")
@@ -124,7 +143,7 @@ def hide_loading_and_update_controls():
                     rb.pack(anchor="w", padx=config.SPACING_MEDIUM, pady=config.SPACING_SMALL)
         # Ensure it's forgotten if conditions not met (especially at launch)
         elif model_selector_frame.winfo_ismapped():
-            log_debug(f"{func_id}: Conditions not met for model_selector_frame, forgetting. model_loaded={model_loaded}, is_fast_processing={is_fast_processing}")
+            log_debug(f"{func_id}: Conditions not met for model_selector_frame, forgetting. model_loaded={model_loaded}, is_fast_processing={is_fast_processing}, file_uploaded={file_uploaded}")
             model_selector_frame.pack_forget()
 
 
@@ -159,17 +178,27 @@ def hide_loading_and_update_controls():
             right_panel.grid(row=1, column=1, sticky="nswe")
             log_debug(f"{func_id}: Panels gridded for two-panel. app_frame col1 weight=2.")
             
-            target_w, target_h = app_globals.ui_references.get('target_two_panel_size', (root.winfo_width(), root.winfo_height()))
+            # Use fixed size of 1305 x 805 as requested
+            target_w, target_h = 1305, 805
             screen_w, screen_h = root.winfo_screenwidth(), root.winfo_screenheight()
-            target_w = min(target_w, screen_w - 20)
-            target_h = min(target_h, screen_h - 60)
+            
+            # Ensure we don't exceed screen limits (with margin) if screen is smaller than target
+            target_w = min(target_w, int(screen_w * 0.95))
+            target_h = min(target_h, int(screen_h * 0.95))
 
             current_w, current_h = root.winfo_width(), root.winfo_height()
-            if current_w < target_w or current_h < target_h:
-                log_debug(f"{func_id}: Resizing window from {current_w}x{current_h} to target {target_w}x{target_h}")
-                root.geometry(f"{target_w}x{target_h}")
             
-            log_debug(f"{func_id}: Calling root.update() for structural geometry. Pre-update geo: {root.geometry()}")
+            # Always set to exact target size (1305x805) when file is uploaded
+            # Ensure we're not expanding beyond screen bounds
+            new_w = min(target_w, screen_w - 50)
+            new_h = min(target_h, screen_h - 80)
+            log_debug(f"{func_id}: Resizing window from {current_w}x{current_h} to exact target {new_w}x{new_h}")
+            root.geometry(f"{new_w}x{new_h}")
+            root.minsize(new_w, new_h)  # Set minimum window size to match target
+            # Force a redraw to ensure window size takes effect immediately
+            root.update()
+            
+            log_debug(f"{func_id}: Set window minsize to {new_w}x{new_h} and calling root.update() for structural geometry. Pre-update geo: {root.geometry()}")
             t_before_update = time.perf_counter()
             root.update() 
             t_after_update = time.perf_counter()
@@ -181,13 +210,27 @@ def hide_loading_and_update_controls():
                 log_debug(f"{func_id_def}: START. Root geo: {root.geometry()}")
                 t_deferred_start = time.perf_counter()
                 if not root.winfo_exists(): return
+                
+                # Ensure first frame is displayed in deferred setup
+                if app_globals.current_processed_image_for_display is not None and video_display_widget and video_display_widget.winfo_exists():
+                    video_display_widget.update_frame(app_globals.current_processed_image_for_display)
+                    log_debug(f"{func_id_def}: Displayed first frame in deferred setup")
 
                 if video_player_container:
                     # Configure video_player_container with an explicit size BEFORE gridding it,
                     # to prevent it from influencing parent's size request initially.
                     # It should later expand due to sticky="nsew" in its grid config.
-                    initial_vpc_w = max(100, int(right_panel.winfo_width() * 0.9)) # Start with 90% of right panel
-                    initial_vpc_h = max(100, int(right_panel.winfo_height() * 0.7)) # Start with 70% of right panel
+                    # Use more conservative size limits to prevent overflow and resize bugginess
+                    right_panel_w = right_panel.winfo_width() or config.DEFAULT_VIDEO_WIDTH
+                    right_panel_h = right_panel.winfo_height() or config.DEFAULT_VIDEO_HEIGHT
+                    
+                    # Hard cap the maximum size to avoid display issues
+                    max_width = min(config.DEFAULT_VIDEO_WIDTH * 1.5, 1280)
+                    max_height = min(config.DEFAULT_VIDEO_HEIGHT * 1.5, 720)
+                    
+                    # More cautious sizing of the video container
+                    initial_vpc_w = min(max(100, int(right_panel_w * 0.85)), max_width)
+                    initial_vpc_h = min(max(100, int(right_panel_h * 0.65)), max_height)
                     log_debug(f"{func_id_def}: Configuring video_player_container with WxH: {initial_vpc_w}x{initial_vpc_h}")
                     video_player_container.config(width=initial_vpc_w, height=initial_vpc_h)
                     
@@ -195,14 +238,44 @@ def hide_loading_and_update_controls():
                         log_debug(f"{func_id_def}: Gridding video_player_container (sticky='nsew') into right_panel ({right_panel.winfo_width()}x{right_panel.winfo_height()}).")
                         video_player_container.grid(row=0, column=0, sticky="nsew", padx=config.SPACING_SMALL, pady=config.SPACING_SMALL)
                     
+                    # Add metrics frame for additional video stats
+                    metrics_frame = ui_comps.get("metrics_frame")
+                    if metrics_frame is None:
+                        # Create metrics frame if it doesn't exist
+                        import tkinter as tk
+                        metrics_frame = tk.Frame(right_panel, bg=config.COLOR_BACKGROUND)
+                        ui_comps["metrics_frame"] = metrics_frame
+                        
+                        # Create detection count label if it doesn't exist
+                        detection_count_label = ttk.Label(metrics_frame, text="Detections: 0")
+                        detection_count_label.pack(side=tk.LEFT, padx=(config.SPACING_SMALL, config.SPACING_MEDIUM))
+                        ui_comps["detection_count_label"] = detection_count_label
+                        
+                        # Create performance label if it doesn't exist
+                        performance_label = ttk.Label(metrics_frame, text="Performance: --")
+                        performance_label.pack(side=tk.LEFT, padx=(config.SPACING_SMALL, config.SPACING_MEDIUM))
+                        ui_comps["performance_label"] = performance_label
+                    
+                    # Grid metrics frame below video container
+                    if not metrics_frame.winfo_ismapped():
+                        metrics_frame.grid(row=1, column=0, sticky="ew", padx=config.SPACING_SMALL, pady=(0, config.SPACING_SMALL))
+                    
                     root.update_idletasks() 
                     log_debug(f"{func_id_def}: video_player_container actual size after grid & update: {video_player_container.winfo_width()}x{video_player_container.winfo_height()}")
                 else:
                     log_debug(f"{func_id_def}: video_player_container is None."); return
 
                 if video_display_widget: 
-                    video_display_widget.target_width = video_player_container.winfo_width() if video_player_container.winfo_width() > 1 else config.DEFAULT_VIDEO_WIDTH
-                    video_display_widget.target_height = video_player_container.winfo_height() if video_player_container.winfo_height() > 1 else config.DEFAULT_VIDEO_HEIGHT
+                    # Get container dimensions but apply stricter size constraints
+                    container_w = video_player_container.winfo_width() if video_player_container.winfo_width() > 1 else config.DEFAULT_VIDEO_WIDTH
+                    container_h = video_player_container.winfo_height() if video_player_container.winfo_height() > 1 else config.DEFAULT_VIDEO_HEIGHT
+                        
+                    # Set target width/height with hard maximum limits to prevent runaway growth
+                    max_display_width = min(config.DEFAULT_VIDEO_WIDTH * 1.5, 1024)
+                    max_display_height = min(config.DEFAULT_VIDEO_HEIGHT * 1.5, 768)
+                        
+                    video_display_widget.target_width = min(container_w, max_display_width)
+                    video_display_widget.target_height = min(container_h, max_display_height)
                     log_debug(f"{func_id_def}: Set video_display_widget target to container size: {video_display_widget.target_width}x{video_display_widget.target_height}")
 
                     if uploaded_file_type == 'image' and app_globals.current_processed_image_for_display is not None:
@@ -210,7 +283,11 @@ def hide_loading_and_update_controls():
                     elif uploaded_file_type == 'video' and app_globals.current_processed_image_for_display is not None:
                         video_display_widget.update_frame(app_globals.current_processed_image_for_display)
                     
-                    video_display_widget.force_initial_resize_and_rebind() 
+                        # Ensure we're not triggering a cascade of resize events
+                        try:
+                            video_display_widget.force_initial_resize_and_rebind(prevent_recursive=True) 
+                        except Exception as e:
+                            log_debug(f"{func_id_def}: Error during video_display_widget resize: {str(e)}")
                 else: log_debug(f"{func_id_def}: video_display_widget is None.")
 
                 t_deferred_end = time.perf_counter()
@@ -218,7 +295,8 @@ def hide_loading_and_update_controls():
                 if root and root.winfo_exists(): root.update_idletasks()
 
             if root and root.winfo_exists():
-                root.after(100, _setup_video_player_content_final_deferred) # Increased delay
+                # Use a longer delay to ensure window is stable before setting up video content
+                root.after(250, _setup_video_player_content_final_deferred)
                 log_debug(f"{func_id}: Scheduled _setup_video_player_content_final_deferred.")
 
         elif right_panel.winfo_ismapped(): 
@@ -228,19 +306,44 @@ def hide_loading_and_update_controls():
             if uploaded_file_type == 'image' and app_globals.current_processed_image_for_display is not None:
                 if video_display_widget: video_display_widget.update_frame(app_globals.current_processed_image_for_display)
             elif uploaded_file_type == 'video' and app_globals.current_processed_image_for_display is not None:
-                if video_display_widget: video_display_widget.update_frame(app_globals.current_processed_image_for_display)
+                if video_display_widget: 
+                    video_display_widget.update_frame(app_globals.current_processed_image_for_display)
+                    log_debug(f"{func_id}: Displayed first video frame in already mapped panel")
             root.update_idletasks() 
 
     else: # No file uploaded
         if right_panel.winfo_ismapped() or left_panel.grid_info().get("columnspan") != 2:
             log_debug(f"{func_id}: No file uploaded: Ensuring single-panel (left) centered layout.")
-            if video_player_container and video_player_container.winfo_ismapped(): video_player_container.grid_remove()
+            # First clear any video content to prevent memory issues
+            if video_display_widget: video_display_widget.clear()
+                
+            # Hide right panel elements
+            if video_player_container and video_player_container.winfo_ismapped(): 
+                video_player_container.grid_remove()
+                    
+            # Remove right panel completely
             right_panel.grid_remove()
+                
+            # Reconfigure left panel to span both columns
             left_panel.grid_configure(column=0, row=1, columnspan=2, sticky="nsew", padx=0)
             app_frame.columnconfigure(0, weight=1, minsize=300, uniform="left_group") 
             app_frame.columnconfigure(1, weight=0, minsize=0, uniform="right_group") 
-            if video_display_widget: video_display_widget.clear()
-            root.update_idletasks() 
+                
+            # Always reset the minimum size to a fixed smaller value when switching to single panel
+            initial_min_w, initial_min_h = 450, 350  # Conservative minimum size for single panel view
+            root.minsize(initial_min_w, initial_min_h)
+            log_debug(f"{func_id}: Reset window minsize to {initial_min_w}x{initial_min_h} for single panel view")
+                
+            # Process layout changes
+            root.update_idletasks()
+                
+            # Always return window to a fixed size when switching to single panel
+            current_w, current_h = root.winfo_width(), root.winfo_height()
+            # Use a fixed size for single panel that's appropriately sized
+            new_w, new_h = 600, 500
+            log_debug(f"{func_id}: Resizing window from {current_w}x{current_h} to fixed single panel size {new_w}x{new_h}")
+            root.geometry(f"{new_w}x{new_h}")
+            root.update_idletasks()  # Process the resize immediately
 
     # --- Standard control state updates (enabling/disabling) ---
     file_upload_btn = ui_comps.get("file_upload_button")
@@ -369,6 +472,8 @@ def update_progress(frame_idx):
         try:
             progress_var = ui_comps.get("progress_var"); current_frame_label = ui_comps.get("current_frame_label")
             time_label = ui_comps.get("time_label"); fps_label = ui_comps.get("fps_label")
+            detection_count_label = ui_comps.get("detection_count_label")
+            performance_label = ui_comps.get("performance_label")
             
             safe_frame_idx = int(frame_idx)
 
@@ -381,9 +486,40 @@ def update_progress(frame_idx):
 
             if source_fps > 0: current_time_secs = safe_frame_idx / source_fps
             
+            # Always update critical UI elements
             if time_label: time_label.config(text=format_time_display(current_time_secs, total_duration_secs))
             if current_frame_label: current_frame_label.config(text=f"Frame: {safe_frame_idx} / {total_frames}")
-            if fps_label : fps_label.config(text=f"FPS: {app_globals.real_time_fps_display_value:.2f}")
+            
+            # Ensure FPS is always displayed, even if real_time_fps_display_value is 0
+            if fps_label:
+                fps_value = app_globals.real_time_fps_display_value
+                if fps_value <= 0 and source_fps > 0:
+                    fps_value = source_fps  # Fallback to source FPS if real-time value not available
+                fps_label.config(text=f"FPS: {fps_value:.1f}")
+            
+            # Display detection count if available
+            if detection_count_label and hasattr(app_globals, 'last_detection_count'):
+                detection_count_label.config(text=f"Detections: {app_globals.last_detection_count}")
+                
+            # Update performance label based on processing load if available
+            if performance_label and hasattr(app_globals, 'last_processing_load'):
+                load = app_globals.last_processing_load
+                if load > 0.9:
+                    performance_label.config(text="Performance: Poor", foreground="red")
+                elif load > 0.7:
+                    performance_label.config(text="Performance: Fair", foreground="orange")
+                elif load > 0.5:
+                    performance_label.config(text="Performance: Good", foreground="black")
+                else:
+                    performance_label.config(text="Performance: Excellent", foreground="green")
+                fps_value = app_globals.real_time_fps_display_value
+                if fps_value <= 0 and source_fps > 0:
+                    fps_value = source_fps  # Fallback to source FPS if real-time value not available
+                fps_label.config(text=f"FPS: {fps_value:.1f}")
+            
+            # Display detection count if available
+            if detection_count_label and hasattr(app_globals, 'last_detection_count'):
+                detection_count_label.config(text=f"Detections: {app_globals.last_detection_count}")
 
         except Exception as e: log_debug(f"Exception in update_progress do_update: {e}", exc_info=True)
         finally:
@@ -393,12 +529,19 @@ def update_progress(frame_idx):
 
 
 def update_fast_progress(progress_value, time_left_str="--:--:--"):
+    # Don't update if we're not actually in fast processing mode
+    if not app_globals.fast_processing_active_flag.is_set():
+        log_debug(f"update_fast_progress: Ignoring call as fast_processing_active_flag is not set")
+        return
+        
     root = app_globals.ui_references.get("root")
     ui_comps = app_globals.ui_references.get("ui_components_dict", {})
     if not ui_comps: log_debug("update_fast_progress: ui_comps not available."); return
     
     fast_progress_var = ui_comps.get("fast_progress_var")
     fast_progress_label = ui_comps.get("fast_progress_label")
+    fps_label = ui_comps.get("fps_label")
+    current_frame_label = ui_comps.get("current_frame_label")
     log_debug(f"update_fast_progress called with value: {progress_value*100:.1f}%, time_left: {time_left_str}")
 
     if fast_progress_var and root and root.winfo_exists():
@@ -425,13 +568,28 @@ def update_fast_progress(progress_value, time_left_str="--:--:--"):
                 hide_loading_and_update_controls() 
                 
                 if time_left_str not in ["Cancelled", "Error", "Invalid Video", "Writer Error", "Finished"]:
+                    # Only print once at completion
+                    log_debug("Fast video processing complete. Ready for playback.")
                     print("Fast video processing complete. Ready for playback.")
                 
                 if time_left_str not in ["Cancelled", "Error", "Invalid Video", "Writer Error"]:
+                    # Update all relevant UI elements with final values
                     fps_label_widget = ui_comps.get("fps_label")
+                    current_frame_label = ui_comps.get("current_frame_label")
+                    detection_count_label = ui_comps.get("detection_count_label")
+                    
                     meta_fps = app_globals.current_video_meta.get('fps', 0)
+                    total_frames = app_globals.current_video_meta.get('total_frames', 0)
+                    
                     if fps_label_widget and meta_fps > 0:
-                        fps_label_widget.config(text=f"FPS: {meta_fps:.2f}")
+                        fps_label_widget.config(text=f"FPS: {meta_fps:.1f}")
+                    
+                    if current_frame_label:
+                        current_frame_label.config(text=f"Frame: {total_frames} / {total_frames}")
+                        
+                    if detection_count_label:
+                        last_count = getattr(app_globals, 'last_detection_count', 0)
+                        detection_count_label.config(text=f"Detections: {last_count}")
 
         if root and root.winfo_exists(): root.after(0, do_update)
     elif not fast_progress_var: log_debug("update_fast_progress: fast_progress_var is None.")

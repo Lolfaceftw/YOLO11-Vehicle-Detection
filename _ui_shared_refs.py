@@ -7,7 +7,7 @@ This helps avoid circular dependencies and makes shared state explicit.
 # These will be populated by init_shared_refs in tk_ui_callbacks.py
 ui_components = {}
 root_window = None
-loading_overlay = None # Managed by functions in _ui_loading_manager
+loading_overlay = None # Reference to singleton LoadingOverlay, managed by _ui_loading_manager
 
 def init_shared_refs(components_dict, root_ref):
     """Initialize the shared UI component dictionary and root window reference."""
@@ -24,11 +24,11 @@ def get_root():
     return root_window
 
 def get_loading_overlay_ref():
-    """Get the current loading overlay instance."""
+    """Get the current loading overlay instance (singleton reference)."""
     global loading_overlay
     return loading_overlay
 
 def set_loading_overlay_ref(overlay_instance):
-    """Set the current loading overlay instance."""
+    """Store a reference to the singleton loading overlay instance."""
     global loading_overlay
     loading_overlay = overlay_instance
