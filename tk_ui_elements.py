@@ -7,39 +7,33 @@ import tkinter as tk
 from tkinter import ttk, filedialog
 from PIL import Image, ImageTk
 import cv2
-import numpy as np # Used by cv2 and PIL
-import os # Not directly used here but often useful in UI context
+import numpy as np 
+import os 
 from . import config
 
-# Create a Material Design style theme
 def setup_material_theme(style_instance=None):
     """Set up a Material Design theme for ttk widgets"""
     style = style_instance if style_instance else ttk.Style()
     
-    # Configure basic styles
     style.configure(".", 
                     font=config.FONT_BODY,
-                    background=config.COLOR_BACKGROUND) # Default background for all widgets
+                    background=config.COLOR_BACKGROUND) 
     
-    # Frame styles
     style.configure("TFrame", 
-                    background=config.COLOR_BACKGROUND) # Default frame background
+                    background=config.COLOR_BACKGROUND) 
     
     style.configure("Card.TFrame",
-                    background=config.COLOR_SURFACE, # Cards have a distinct surface color
-                    relief="solid", # Use solid relief for a subtle border
+                    background=config.COLOR_SURFACE, 
+                    relief="solid", 
                     borderwidth=1) 
     style.map("Card.TFrame",
               bordercolor=[('active', config.COLOR_PRIMARY_LIGHT), ('!active', config.COLOR_BACKGROUND_LIGHT)])
 
-
-    # Label styles
     style.configure("TLabel", 
                     font=config.FONT_BODY,
-                    background=config.COLOR_BACKGROUND, # Default label on main background
+                    background=config.COLOR_BACKGROUND, 
                     foreground=config.COLOR_TEXT_PRIMARY)
     
-    # Labels inside a Card.TFrame should use the Card's surface color
     style.configure("Card.TLabel", 
                     font=config.FONT_BODY,
                     background=config.COLOR_SURFACE,
@@ -55,15 +49,15 @@ def setup_material_theme(style_instance=None):
                     background=config.COLOR_SURFACE, 
                     foreground=config.COLOR_TEXT_SECONDARY)
     
-    # For Caption.TLabel, ensure it can be on TFrame (main background) or Card.TFrame (surface background)
-    # We will handle this by applying Card.TLabel if its parent is a Card.TFrame, otherwise TLabel.
-    # Or, define a specific Caption.TLabel that assumes its parent's background.
     style.configure("Caption.TLabel",
                     font=config.FONT_CAPTION,
-                    # background will be inherited or set if parent is Card.TFrame
                     foreground=config.COLOR_TEXT_SECONDARY) 
     
-    # LabelFrame styles (used for grouping controls)
+    style.configure("Info.TLabel", # New style for FPS/Frame count, inherits TFrame background
+                    font=config.FONT_CAPTION,
+                    background=config.COLOR_BACKGROUND, # Match parent TFrame background
+                    foreground=config.COLOR_TEXT_SECONDARY)
+
     style.configure("TLabelframe", 
                     background=config.COLOR_SURFACE, 
                     relief="solid",
@@ -78,7 +72,6 @@ def setup_material_theme(style_instance=None):
                     foreground=config.COLOR_TEXT_PRIMARY,
                     padding=(0,0,0,config.SPACING_SMALL)) 
     
-    # Button styles
     style.configure("TButton", 
                     font=config.FONT_BUTTON,
                     padding=(config.SPACING_MEDIUM, config.SPACING_SMALL),
@@ -107,7 +100,6 @@ def setup_material_theme(style_instance=None):
                           ('!disabled', config.COLOR_SECONDARY)],
               relief=[('pressed', 'sunken'), ('!pressed', 'raised')])
         
-    # Radio button styles
     style.configure("TRadiobutton",
                     font=config.FONT_BODY,
                     background=config.COLOR_SURFACE, 
@@ -120,7 +112,6 @@ def setup_material_theme(style_instance=None):
               indicatorbackground=[('selected', config.COLOR_PRIMARY), ('!selected', config.COLOR_SURFACE)],
               indicatorforeground=[('selected', config.COLOR_PRIMARY_TEXT), ('!selected', config.COLOR_TEXT_PRIMARY)])
 
-    # Scale/Slider styles
     style.configure("TScale",
                     troughcolor=config.COLOR_BACKGROUND_LIGHT,
                     background=config.COLOR_SURFACE, 
@@ -131,7 +122,6 @@ def setup_material_theme(style_instance=None):
               background=[('active', config.COLOR_PRIMARY_LIGHT), ('disabled', config.COLOR_BACKGROUND_LIGHT)],
               troughcolor=[('disabled', config.COLOR_BACKGROUND_LIGHT)])
     
-    # Progressbar styles
     style.configure("TProgressbar",
                     troughcolor=config.COLOR_BACKGROUND_LIGHT,
                     background=config.COLOR_SECONDARY, 
@@ -148,24 +138,6 @@ def setup_material_theme(style_instance=None):
                     font=config.FONT_MESSAGE_OVERLAY) 
     
     return style
-
-
-class RedirectText:
-    """Class to redirect stdout/stderr to a tkinter Text widget"""
-    def __init__(self, text_widget):
-        self.text_widget = text_widget
-        self.text_widget.config(state=tk.DISABLED) 
-        
-    def write(self, string_to_write):
-        if not self.text_widget.winfo_exists(): return 
-        self.text_widget.config(state=tk.NORMAL)
-        self.text_widget.insert(tk.END, string_to_write)
-        self.text_widget.see(tk.END) 
-        self.text_widget.config(state=tk.DISABLED)
-        
-    def flush(self):
-        pass
-
 
 class LoadingOverlay(tk.Toplevel):
     """Loading overlay that blocks interaction with the main window"""
@@ -330,19 +302,9 @@ class VideoDisplayFrame(ttk.Frame):
 
 
 def create_ui_components(root_window, parent_left_panel, parent_right_panel):
-    """Create all UI components for the application, parenting them correctly.
-    
-    Args:
-        root_window: The main Tkinter root window.
-        parent_left_panel: The ttk.Frame that will contain left-side controls.
-        parent_right_panel: The ttk.Frame that will contain right-side display/output.
-        
-    Returns:
-        Dictionary of UI components
-    """
+    """Create all UI components for the application, parenting them correctly. """
     style = setup_material_theme() 
     
-    # --- Components for Left Panel ---
     file_upload_frame = ttk.Frame(parent_left_panel, style="Card.TFrame", padding=config.SPACING_MEDIUM)
     file_upload_button = ttk.Button(file_upload_frame, text="Upload File", style="Primary.TButton")
     file_upload_label = ttk.Label(file_upload_frame, text="No file selected", style="Card.TLabel", width=40)
@@ -398,44 +360,45 @@ def create_ui_components(root_window, parent_left_panel, parent_right_panel):
     fast_progress_label_text.pack(side="left", padx=(0, config.SPACING_MEDIUM))
     fast_progress_bar_widget.pack(side="left", expand=True, fill="x")
 
-    # --- Components for Right Panel ---
     video_player_container_frame = ttk.Frame(parent_right_panel, style="Card.TFrame") 
-    output_frame = ttk.LabelFrame(parent_right_panel, text="Console Output", style="TLabelframe")
-
+    
     video_display_widget = VideoDisplayFrame(video_player_container_frame, style="TFrame")
     
-    # Video controls (Play/Pause, Stop) - Parented to video_player_container_frame
-    video_controls_subframe = ttk.Frame(video_player_container_frame, style="TFrame") # Changed from Card.TFrame
+    video_controls_subframe = ttk.Frame(video_player_container_frame, style="TFrame") 
     play_pause_button_widget = ttk.Button(video_controls_subframe, text="Play", style="Primary.TButton", state="disabled")
     stop_button_widget = ttk.Button(video_controls_subframe, text="Stop", style="Secondary.TButton", state="disabled")
     play_pause_button_widget.pack(side="left", padx=(0, config.SPACING_MEDIUM))
     stop_button_widget.pack(side="left")
     
-    # Video progress slider and time label - Parented to video_player_container_frame
-    progress_subframe = ttk.Frame(video_player_container_frame, style="TFrame") # Changed from Card.TFrame
+    progress_subframe = ttk.Frame(video_player_container_frame, style="TFrame") 
     progress_var = tk.IntVar(value=0) 
     progress_slider_widget = ttk.Scale(
         progress_subframe, from_=0, to=100, orient="horizontal", variable=progress_var, state="disabled"
     )
-    # Ensure time_display_label uses a style that matches TFrame's background (main app background)
     time_display_label = ttk.Label(progress_subframe, text="00:00 / 00:00", style="TLabel", width=12, anchor="e") 
     
     progress_slider_widget.pack(side="left", expand=True, fill="x", padx=(0, config.SPACING_MEDIUM))
     time_display_label.pack(side="left")
 
+    # New frame for FPS and Current Frame labels, parented to video_player_container_frame
+    video_info_subframe = ttk.Frame(video_player_container_frame, style="TFrame")
+    fps_label_widget = ttk.Label(video_info_subframe, text="FPS: --", style="Info.TLabel", width=15, anchor="w")
+    current_frame_label_widget = ttk.Label(video_info_subframe, text="Frame: -- / --", style="Info.TLabel", anchor="e")
+
+    fps_label_widget.pack(side="left", padx=(config.SPACING_SMALL, 0))
+    current_frame_label_widget.pack(side="right", padx=(0, config.SPACING_SMALL))
+
+
     video_player_container_frame.columnconfigure(0, weight=1)
     video_player_container_frame.rowconfigure(0, weight=0) 
     video_player_container_frame.rowconfigure(1, weight=0) 
     video_player_container_frame.rowconfigure(2, weight=1) 
+    video_player_container_frame.rowconfigure(3, weight=0) # New row for video info labels
+
     video_controls_subframe.grid(row=0, column=0, sticky="ew", padx=config.SPACING_SMALL, pady=(config.SPACING_SMALL,0))
     progress_subframe.grid(row=1, column=0, sticky="ew", padx=config.SPACING_SMALL, pady=config.SPACING_SMALL)
     video_display_widget.grid(row=2, column=0, sticky="nsew", padx=config.SPACING_SMALL, pady=(0, config.SPACING_SMALL))
-
-    output_text_widget = tk.Text(output_frame, height=6, width=50, state="disabled", font=config.FONT_CODE, background=config.COLOR_BACKGROUND_LIGHT, foreground=config.COLOR_TEXT_PRIMARY, borderwidth=0, relief="flat", wrap="word", padx=config.SPACING_SMALL, pady=config.SPACING_SMALL)
-    output_scrollbar_widget = ttk.Scrollbar(output_frame, orient="vertical", command=output_text_widget.yview)
-    output_text_widget.configure(yscrollcommand=output_scrollbar_widget.set)
-    output_text_widget.pack(side="left", fill="both", expand=True)
-    output_scrollbar_widget.pack(side="right", fill="y")
+    video_info_subframe.grid(row=3, column=0, sticky="ew", padx=config.SPACING_SMALL, pady=(config.SPACING_SMALL, config.SPACING_SMALL))
     
     return {
         "file_upload_frame": file_upload_frame,
@@ -454,8 +417,6 @@ def create_ui_components(root_window, parent_left_panel, parent_right_panel):
         "conf_slider": conf_slider_widget,
         "conf_var": conf_var,
         "conf_value_label": conf_value_display_label,
-        "output_frame": output_frame,
-        "output_text": output_text_widget,
         "fast_progress_frame": fast_progress_frame,
         "fast_progress_bar": fast_progress_bar_widget,
         "fast_progress_var": fast_progress_var,
@@ -467,5 +428,7 @@ def create_ui_components(root_window, parent_left_panel, parent_right_panel):
         "progress_frame": progress_subframe, 
         "progress_slider": progress_slider_widget,
         "progress_var": progress_var,
-        "time_label": time_display_label
+        "time_label": time_display_label,
+        "fps_label": fps_label_widget, # Added
+        "current_frame_label": current_frame_label_widget # Added
     }

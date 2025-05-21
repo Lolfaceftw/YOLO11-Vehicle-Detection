@@ -1,13 +1,13 @@
 import threading
 
 # --- Global State for Video Processing ---\n",
-video_thread = None # This might become obsolete for playback, used for other tasks?
-stop_video_processing_flag = threading.Event() # Still used to signal the root.after loop to stop
+video_thread = None 
+stop_video_processing_flag = threading.Event() 
 video_paused_flag = threading.Event()
 current_video_frame = None 
 video_capture_global = None 
 video_access_lock = threading.Lock() 
-is_playing_via_after_loop = False # True if video is playing via root.after loop (real-time or processed)
+is_playing_via_after_loop = False 
 after_id_playback_loop = None 
 
 # --- Global State for Fast (Batch) Video Processing ---\n",
@@ -36,5 +36,5 @@ device_to_use = 'cpu'
 current_video_meta = {'fps': 0.0, 'total_frames': 0, 'duration_seconds': 0.0, 'current_frame': 0} 
 uploaded_file_info = {} 
 
-main_output_area_widget = None 
+# main_output_area_widget = None # Removed as console output box is removed
 current_processed_image_for_display = None 

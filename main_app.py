@@ -9,27 +9,20 @@ import sys
 import threading
 
 from . import config
-from . import globals as app_globals # app_globals is used by other modules
-from .logger_setup import log_debug, setup_logging as app_setup_logging # app_setup_logging not used directly here
+from . import globals as app_globals 
+from .logger_setup import log_debug, setup_logging as app_setup_logging 
 from .model_loader import (
     load_model as initial_load_model, 
     get_available_model_keys, 
     get_default_model_key,
-    # AVAILABLE_MODELS # Not directly used here
 )
 from .tk_ui_elements import create_ui_components 
-# Corrected imports for loading manager functions
 from ._ui_loading_manager import show_loading, hide_loading_and_update_controls
 from .tk_ui_callbacks import init_callbacks
 
 
 def setup_model_selector(ui_components_dict):
-    """Set up the model selector with available models
-    
-    Args:
-        ui_components_dict: Dictionary of UI components. 
-                           Assumes model_selector_frame and model_var are correctly parented and exist.
-    """
+    """Set up the model selector with available models """
     log_debug("Setting up model selector...")
     
     model_keys = get_available_model_keys()
@@ -71,9 +64,7 @@ def setup_model_selector(ui_components_dict):
 
 
 def place_ui_components_in_layout(left_panel_ref, right_panel_ref, ui_components_dict):
-    """Places the already created UI components into their respective parent panels.
-    Assumes components in ui_components_dict have been created with correct parents.
-    """
+    """Places the already created UI components into their respective parent panels."""
     log_debug("Placing UI components into layout...")
 
     ui_components_dict["file_upload_frame"].pack(fill="x", pady=(0, config.SPACING_MEDIUM), anchor="n")
@@ -82,19 +73,14 @@ def place_ui_components_in_layout(left_panel_ref, right_panel_ref, ui_components
     ui_components_dict["sliders_frame"].pack(fill="x", pady=(0, config.SPACING_MEDIUM), anchor="n")
 
     right_panel_ref.rowconfigure(0, weight=1)  
-    right_panel_ref.rowconfigure(1, weight=0, minsize=100) 
     right_panel_ref.columnconfigure(0, weight=1)
 
-    ui_components_dict["video_player_container"].grid(row=0, column=0, sticky="nsew", pady=(0, config.SPACING_MEDIUM))
-    ui_components_dict["output_frame"].grid(row=1, column=0, sticky="ewns")
+    # video_player_container now takes the full space allocated to it in the right panel
+    ui_components_dict["video_player_container"].grid(row=0, column=0, sticky="nsew")
     
 
 def on_close(root_win):
-    """Handle window close event.
-    
-    Args:
-        root_win: Root Tkinter window
-    """
+    """Handle window close event. """
     log_debug("Application closing...")
     
     from .tk_ui_callbacks import _stop_all_processing_logic 
@@ -111,8 +97,8 @@ def launch_app():
     
     root = tk.Tk()
     root.title("Vehicle Detection and Tracking")
-    root.geometry("900x800") 
-    root.minsize(700, 600) 
+    root.geometry("900x700") 
+    root.minsize(700, 500) 
     root.configure(background=config.COLOR_BACKGROUND)
     
     app_frame = ttk.Frame(root, style="TFrame", padding=config.SPACING_MEDIUM)
@@ -152,7 +138,7 @@ def launch_app():
         root.mainloop() 
         return
     
-    init_callbacks(root, ui_components_dict)
+    init_callbacks(root, ui_components_dict) 
     
     log_debug(f"--- Initializing Application --- Loading default model: {ui_components_dict['model_var'].get()}")
     default_model_to_load = ui_components_dict['model_var'].get()

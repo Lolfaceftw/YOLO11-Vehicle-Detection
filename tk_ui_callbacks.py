@@ -18,9 +18,9 @@ def _stop_all_processing_logic():
     log_debug("Stopping all video processing and playback logic.")
     root = refs.get_root() 
     
-    app_globals.stop_video_processing_flag.set() # Signal for all loops to stop
+    app_globals.stop_video_processing_flag.set() 
 
-    if app_globals.is_playing_via_after_loop and app_globals.after_id_playback_loop: # Corrected flag
+    if app_globals.is_playing_via_after_loop and app_globals.after_id_playback_loop: 
         if root and root.winfo_exists():
             try:
                 root.after_cancel(app_globals.after_id_playback_loop)
@@ -28,12 +28,10 @@ def _stop_all_processing_logic():
             except tk.TclError:
                 log_debug(f"Error cancelling root.after playback loop ID: {app_globals.after_id_playback_loop} (already cancelled or window gone).")
         app_globals.after_id_playback_loop = None
-    app_globals.is_playing_via_after_loop = False # Corrected flag
+    app_globals.is_playing_via_after_loop = False 
 
-    # Remove legacy video_thread handling for playback as it's now done by root.after
-    if app_globals.video_thread and app_globals.video_thread.is_alive(): # This check might be for other non-playback threads if any
+    if app_globals.video_thread and app_globals.video_thread.is_alive(): 
         log_debug("Stopping legacy video_thread (if any)...")
-        # app_globals.stop_video_processing_flag.set() # Already set above
         app_globals.video_thread.join(timeout=0.5) 
         if app_globals.video_thread.is_alive():
             log_debug("Legacy video_thread did not join in time.")
@@ -64,7 +62,7 @@ def _stop_all_processing_logic():
         app_globals.slider_debounce_timer = None
 
     _cleanup_processed_video_temp_file()
-    app_globals.stop_video_processing_flag.clear() # Reset for next operation
+    app_globals.stop_video_processing_flag.clear() 
     log_debug("All processing logic stopped and resources potentially released.")
 
 
@@ -94,8 +92,8 @@ def init_callbacks(root_win, components_dict):
     if progress_slider_widget:
         progress_slider_widget.bind("<ButtonRelease-1>", event_handlers.handle_slider_click_release)
     
-    from .tk_ui_elements import RedirectText 
-    sys.stdout = RedirectText(components_dict["output_text"])
-    sys.stderr = RedirectText(components_dict["output_text"]) 
+    # Removed stdout/stderr redirection as console output box is removed
+    # sys.stdout = RedirectText(components_dict["output_text"])
+    # sys.stderr = RedirectText(components_dict["output_text"]) 
 
-    log_debug("Tkinter callbacks initialized and stdout/stderr redirected.")
+    log_debug("Tkinter callbacks initialized.")
