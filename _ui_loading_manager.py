@@ -4,7 +4,7 @@ Manages the loading overlay and updating UI control states.
 Also includes UI update callbacks like update_progress.
 """
 import tkinter as tk
-from tkinter import ttk # <--- Added import
+from tkinter import ttk
 from . import _ui_shared_refs as refs
 from . import globals as app_globals
 from . import config
@@ -43,20 +43,25 @@ def show_loading(message="Loading..."):
 
     ui_comps = refs.ui_components
     if ui_comps:
-        controls_to_disable = [
+        # Disable all interactive controls during loading
+        controls_to_manage = [
             "file_upload_button", "process_button", "fast_process_button",
             "iou_slider", "conf_slider",
             "play_pause_button", "stop_button", "progress_slider"
         ]
-        for key in controls_to_disable:
+        for key in controls_to_manage:
             comp = ui_comps.get(key)
             if comp:
-                comp.config(state="disabled")
-
+                if isinstance(comp, (ttk.Button, ttk.Radiobutton)):
+                    comp.state(['disabled'])
+                elif isinstance(comp, ttk.Scale):
+                    comp.config(state="disabled")
+        
         model_buttons = ui_comps.get("model_buttons", [])
         for button in model_buttons:
             if button:
-                button.config(state="disabled")
+                button.state(['disabled'])
+
 
 def hide_loading_and_update_controls():
     """Hide loading overlay and update the state of UI controls."""
@@ -82,33 +87,52 @@ def hide_loading_and_update_controls():
     file_uploaded = bool(app_globals.uploaded_file_info and app_globals.uploaded_file_info.get('path'))
     is_video_file = file_uploaded and app_globals.uploaded_file_info.get('file_type', '') == 'video'
 
-    if ui_comps.get("file_upload_button"):
-        ui_comps["file_upload_button"].config(state="disabled" if is_fast_processing else "normal")
+    # File Upload Button
+    file_upload_btn = ui_comps.get("file_upload_button")
+    if file_upload_btn:
+        new_state = ['disabled'] if is_fast_processing else ['!disabled']
+        file_upload_btn.state(new_state)
+        log_debug(f"File Upload Button state set to: {file_upload_btn.state()}, Effective style: {file_upload_btn.cget('style')}")
 
+
+    # Model Radiobuttons
     for button in ui_comps.get("model_buttons", []):
-        if button: button.config(state="disabled" if is_fast_processing else "normal")
+        if button:
+            new_state = ['disabled'] if is_fast_processing else ['!disabled']
+            button.state(new_state)
+            # log_debug(f"Model Button '{button.cget('text')}' state set to: {button.state()}, Effective style: {button.cget('style')}")
 
-    sliders_state = "normal" if model_loaded and not is_fast_processing else "disabled"
-    if ui_comps.get("iou_slider"): ui_comps["iou_slider"].config(state=sliders_state)
-    if ui_comps.get("conf_slider"): ui_comps["conf_slider"].config(state=sliders_state)
 
-    can_process_realtime = file_uploaded and model_loaded and not is_fast_processing
-    if ui_comps.get("process_button"):
-        ui_comps["process_button"].config(state="normal" if can_process_realtime else "disabled")
+    # Sliders (use .config for state)
+    sliders_new_state_tk = "normal" if model_loaded and not is_fast_processing else "disabled"
+    if ui_comps.get("iou_slider"): ui_comps["iou_slider"].config(state=sliders_new_state_tk)
+    if ui_comps.get("conf_slider"): ui_comps["conf_slider"].config(state=sliders_new_state_tk)
 
-    fast_process_btn_state = "disabled"
-    if can_process_realtime and is_video_file and not is_fast_processing:
-        fast_process_btn_state = "normal"
-    if ui_comps.get("fast_process_button"):
-        ui_comps["fast_process_button"].config(state=fast_process_btn_state)
+    # Process Real-time Button
+    process_btn = ui_comps.get("process_button")
+    if process_btn:
+        can_process_realtime = file_uploaded and model_loaded and not is_fast_processing
+        new_state = ['!disabled'] if can_process_realtime else ['disabled']
+        process_btn.state(new_state)
+        log_debug(f"Process Real-time Button state set to: {process_btn.state()}, Effective style: {process_btn.cget('style')}")
+
+
+    # Fast Process Video Button
+    fast_process_btn = ui_comps.get("fast_process_button")
+    if fast_process_btn:
+        can_fast_process = file_uploaded and model_loaded and is_video_file and not is_fast_processing
+        new_state = ['!disabled'] if can_fast_process else ['disabled']
+        fast_process_btn.state(new_state)
+        log_debug(f"Fast Process Button state set to: {fast_process_btn.state()}, Effective style: {fast_process_btn.cget('style')}")
 
 
     is_video_playback_active = app_globals.is_playing_via_after_loop
-
     is_processed_video_ready_for_playback = app_globals.processed_video_temp_file_path_global and \
                                            os.path.exists(app_globals.processed_video_temp_file_path_global) and \
                                            not is_video_playback_active
+    
     should_show_video_controls_ui = (is_video_file or is_processed_video_ready_for_playback) and not is_fast_processing
+
 
     play_pause_btn = ui_comps.get("play_pause_button")
     stop_btn = ui_comps.get("stop_button")
@@ -118,63 +142,78 @@ def hide_loading_and_update_controls():
     fps_lbl = ui_comps.get("fps_label")
     current_frame_lbl = ui_comps.get("current_frame_label")
 
-
     if play_pause_btn and stop_btn and prog_slider and prog_var and time_lbl:
         if should_show_video_controls_ui:
-            play_text = "Play"; play_state = "disabled"; stop_state = "disabled"
+            play_text = "Play"
+            play_btn_new_state_list = ['disabled']
+            stop_btn_new_state_list = ['disabled']
+
             if is_video_playback_active:
                 play_text = "Pause" if not app_globals.video_paused_flag.is_set() else "Play"
-                play_state = "normal"; stop_state = "normal"
+                play_btn_new_state_list = ['!disabled']
+                stop_btn_new_state_list = ['!disabled']
             elif is_processed_video_ready_for_playback:
-                play_text = "Play"; play_state = "normal"; stop_state = "normal"
+                play_text = "Play"
+                play_btn_new_state_list = ['!disabled']
+                stop_btn_new_state_list = ['!disabled']
             elif is_video_file and app_globals.video_capture_global and app_globals.video_capture_global.isOpened():
-                play_text = "Play"; play_state = "normal"; stop_state = "normal"
-            elif is_video_file:
-                play_text = "Play"; play_state = "normal"; stop_state = "disabled"
+                play_text = "Play"
+                play_btn_new_state_list = ['!disabled']
+                stop_btn_new_state_list = ['!disabled']
+            elif is_video_file: # File uploaded, but not opened/processed yet
+                play_text = "Play" 
+                play_btn_new_state_list = ['!disabled'] 
+                stop_btn_new_state_list = ['disabled'] 
 
+            play_pause_btn.config(text=play_text) 
+            play_pause_btn.state(play_btn_new_state_list) 
+            stop_btn.state(stop_btn_new_state_list)
+            log_debug(f"Play/Pause Button state: {play_pause_btn.state()}, Text: {play_text}, Style: {play_pause_btn.cget('style')}")
+            log_debug(f"Stop Button state: {stop_btn.state()}, Style: {stop_btn.cget('style')}")
 
-            play_pause_btn.config(text=play_text, state=play_state)
-            stop_btn.config(state=stop_state)
 
             meta_total_frames = app_globals.current_video_meta.get('total_frames', 0)
             meta_fps_source = app_globals.current_video_meta.get('fps', 0)
             meta_duration = app_globals.current_video_meta.get('duration_seconds', 0)
             current_frame_num = app_globals.current_video_meta.get('current_frame', 0)
 
-
             if meta_total_frames > 0:
                 prog_slider.config(state="normal", to=float(meta_total_frames - 1 if meta_total_frames > 0 else 0))
-                if not is_video_playback_active:
+                if not is_video_playback_active: 
                     if prog_var.get() != current_frame_num:
                         app_globals.is_programmatic_slider_update = True
                         try: prog_var.set(current_frame_num)
                         finally: app_globals.is_programmatic_slider_update = False
-
+                
                 actual_slider_pos = prog_var.get()
                 current_secs_for_time = actual_slider_pos / meta_fps_source if meta_fps_source > 0 else 0
                 time_lbl.config(text=format_time_display(current_secs_for_time, meta_duration))
-
+                
                 if is_video_playback_active:
                     if fps_lbl: fps_lbl.config(text=f"FPS: {app_globals.real_time_fps_display_value:.2f}")
-                else:
+                else: 
                     if fps_lbl: fps_lbl.config(text=f"FPS: {meta_fps_source:.2f}" if meta_fps_source > 0 else "FPS: --")
-
+                
                 if current_frame_lbl: current_frame_lbl.config(text=f"Frame: {actual_slider_pos} / {meta_total_frames}")
 
-            else:
+            else: 
                 prog_slider.config(state="disabled", to=100.0)
                 if prog_var.get() != 0: prog_var.set(0)
                 time_lbl.config(text="00:00 / 00:00")
                 if fps_lbl: fps_lbl.config(text="FPS: --")
                 if current_frame_lbl: current_frame_lbl.config(text="Frame: -- / --")
-        else:
-            play_pause_btn.config(text="Play", state="disabled")
-            stop_btn.config(state="disabled")
+        else: 
+            play_pause_btn.config(text="Play")
+            play_pause_btn.state(['disabled'])
+            stop_btn.state(['disabled'])
             prog_slider.config(state="disabled", to=100.0)
             if prog_var.get() != 0: prog_var.set(0)
             time_lbl.config(text="00:00 / 00:00")
             if fps_lbl: fps_lbl.config(text="FPS: --")
             if current_frame_lbl: current_frame_lbl.config(text="Frame: -- / --")
+            log_debug(f"Play/Pause Button (no video controls) state: {play_pause_btn.state()}, Style: {play_pause_btn.cget('style')}")
+            log_debug(f"Stop Button (no video controls) state: {stop_btn.state()}, Style: {stop_btn.cget('style')}")
+
 
     fast_progress_frame = ui_comps.get("fast_progress_frame")
     if fast_progress_frame:
@@ -183,21 +222,15 @@ def hide_loading_and_update_controls():
             if not fast_progress_frame.winfo_ismapped():
                 log_debug("Packing fast_progress_frame.")
                 fast_progress_frame.pack(fill="x", padx=config.SPACING_SMALL, pady=config.SPACING_SMALL, anchor="n")
-                if fast_progress_frame.winfo_exists(): 
+                if fast_progress_frame.winfo_exists():
                     fast_progress_frame.update_idletasks()
                 log_debug(f"fast_progress_frame is_mapped: {fast_progress_frame.winfo_ismapped()}, width: {fast_progress_frame.winfo_width()}, height: {fast_progress_frame.winfo_height()}")
 
-                fp_label = None
-                # Iterate to find the ttk.Label specifically
-                for child in fast_progress_frame.winfo_children():
-                    if isinstance(child, ttk.Label): 
-                        fp_label = child
-                        break
-                
+                fp_label = ui_comps.get("fast_progress_label")
                 fp_bar = ui_comps.get("fast_progress_bar")
 
                 if fp_label and fp_label.winfo_exists():
-                    log_debug("Re-packing fast_progress_label_text.")
+                    log_debug("Re-packing fast_progress_label.")
                     fp_label.pack_forget()
                     fp_label.pack(side="left", padx=(0, config.SPACING_MEDIUM))
                     fp_label.update_idletasks()
@@ -208,14 +241,25 @@ def hide_loading_and_update_controls():
                     fp_bar.pack(side="left", expand=True, fill="x")
                     fp_bar.update_idletasks()
                     log_debug(f"fast_progress_bar (after repack) is_mapped: {fp_bar.winfo_ismapped()}, width: {fp_bar.winfo_width()}, height: {fp_bar.winfo_height()}, current_value: {fp_bar.cget('value')}, var_value: {ui_comps.get('fast_progress_var').get()}")
+            
+            fp_label_widget = ui_comps.get("fast_progress_label")
+            if fp_label_widget and fp_label_widget.cget("text") == "Progress: 0% | --:--:-- Time Left":
+                 log_debug("Fast progress label is default, ensuring it's visible and updated if processing.")
+                 # update_fast_progress will be called by the thread, this is just for initial show
+                 fp_label_widget.config(text="Progress: 0% | Calculating..." if is_fast_processing else "Progress: 0% | --:--:-- Time Left")
+
 
             if root and root.winfo_exists():
                  log_debug("Updating root idletasks at end of fast_processing block.")
                  root.update_idletasks()
-        else:
+        else: 
             log_debug("hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.")
             if fast_progress_frame.winfo_ismapped():
                 fast_progress_frame.pack_forget()
+            fp_label_widget = ui_comps.get("fast_progress_label")
+            if fp_label_widget: # Reset text when hiding
+                fp_label_widget.config(text="Progress: 0% | --:--:-- Time Left")
+
 
     video_controls_frame = ui_comps.get("video_controls_frame")
     progress_frame = ui_comps.get("progress_frame")
@@ -290,8 +334,8 @@ def update_progress(frame_idx):
 
     root.after(0, do_update)
 
-def update_fast_progress(progress_value):
-    """Update fast progress bar. Called from fast_video_processing_thread_func."""
+def update_fast_progress(progress_value, time_left_str="--:--:--"):
+    """Update fast progress bar and label. Called from fast_video_processing_thread_func."""
     root = refs.get_root()
     ui_comps = refs.ui_components
     if not ui_comps:
@@ -299,27 +343,40 @@ def update_fast_progress(progress_value):
         return
 
     fast_progress_var = ui_comps.get("fast_progress_var")
-    log_debug(f"update_fast_progress called with value: {progress_value*100:.1f}%")
+    fast_progress_label = ui_comps.get("fast_progress_label")
+
+    log_debug(f"update_fast_progress called with value: {progress_value*100:.1f}%, time_left: {time_left_str}")
 
     if fast_progress_var and root and root.winfo_exists():
         def do_update():
-            current_val = int(progress_value * 100)
-            log_debug(f"update_fast_progress (do_update): Target value: {current_val}")
+            current_val_int = int(progress_value * 100)
+            log_debug(f"update_fast_progress (do_update): Target value: {current_val_int}%")
+            
             if fast_progress_var:
-                fast_progress_var.set(current_val)
+                fast_progress_var.set(current_val_int)
                 log_debug(f"fast_progress_var set to: {fast_progress_var.get()}")
+
+            if fast_progress_label:
+                new_label_text = f"Progress: {current_val_int}% | {time_left_str} Time Left"
+                if progress_value >= 1.0 and time_left_str in ["Cancelled", "Error", "Invalid Video", "Writer Error", "Finished"]: # Added "Finished"
+                    new_label_text = f"Fast Processing: {time_left_str}"
+                elif progress_value >= 1.0:
+                     new_label_text = "Fast Processing: Complete"
+                fast_progress_label.config(text=new_label_text)
+                log_debug(f"fast_progress_label text set to: \"{new_label_text}\"")
+
 
             fp_bar = ui_comps.get("fast_progress_bar")
             if fp_bar and fp_bar.winfo_exists():
-                log_debug(f"fast_progress_bar widget value before update: {fp_bar.cget('value')}, var_value: {fast_progress_var.get()}, is_mapped: {fp_bar.winfo_ismapped()}, width: {fp_bar.winfo_width()}, height: {fp_bar.winfo_height()}")
-                fp_bar.update_idletasks() 
-                log_debug(f"fast_progress_bar widget value after update_idletasks: {fp_bar.cget('value')}, var_value: {fast_progress_var.get()}, is_mapped: {fp_bar.winfo_ismapped()}, width: {fp_bar.winfo_width()}, height: {fp_bar.winfo_height()}")
-            else:
-                log_debug("fast_progress_bar widget not found or not existing in do_update.")
+                # log_debug(f"fast_progress_bar widget value before update: {fp_bar.cget('value')}, var_value: {fast_progress_var.get()}, is_mapped: {fp_bar.winfo_ismapped()}, width: {fp_bar.winfo_width()}, height: {fp_bar.winfo_height()}")
+                fp_bar.update_idletasks()
+                # log_debug(f"fast_progress_bar widget value after update_idletasks: {fp_bar.cget('value')}, var_value: {fast_progress_var.get()}, is_mapped: {fp_bar.winfo_ismapped()}, width: {fp_bar.winfo_width()}, height: {fp_bar.winfo_height()}")
+            # else:
+                # log_debug("fast_progress_bar widget not found or not existing in do_update.")
 
 
             if root and root.winfo_exists():
-                log_debug("update_fast_progress (do_update): Updating root idletasks.")
+                # log_debug("update_fast_progress (do_update): Updating root idletasks.")
                 root.update_idletasks()
 
             if progress_value >= 1.0:
@@ -327,10 +384,13 @@ def update_fast_progress(progress_value):
                 app_globals.fast_processing_active_flag.clear()
                 log_debug("Fast processing 100% (update_fast_progress): Flag cleared. Updating controls.")
                 hide_loading_and_update_controls()
-                print("Fast video processing complete. Ready for playback.")
+                
+                if time_left_str not in ["Cancelled", "Error", "Invalid Video", "Writer Error", "Finished"]:
+                    print("Fast video processing complete. Ready for playback.")
+                
                 fps_label = ui_comps.get("fps_label")
                 meta_fps = app_globals.current_video_meta.get('fps', 0)
-                if fps_label and meta_fps > 0:
+                if fps_label and meta_fps > 0: 
                     fps_label.config(text=f"FPS: {meta_fps:.2f}")
         
         root.after(0, do_update)
