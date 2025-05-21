@@ -296,7 +296,16 @@ def stop_video_stream_button_click():
     """Stop video playback or any ongoing video-related processing."""
     log_debug("stop_video_stream_button_click: 'Stop' button pressed.")
     ui_comps = refs.ui_components
+    
+    # Inform user that this will clear the video selection
+    messagebox.showinfo("Video Selection", "Stopping process will clear the current video selection.")
+    
     _stop_all_processing_logic_ref() 
+    
+    # Clear the video selection
+    app_globals.uploaded_file_info = {}
+    if ui_comps.get("file_upload_label"): 
+        ui_comps["file_upload_label"].config(text="No file selected")
     
     if ui_comps.get("video_display"): ui_comps["video_display"].clear()
     app_globals.current_video_frame = None
