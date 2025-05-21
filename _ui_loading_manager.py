@@ -76,6 +76,7 @@ def hide_loading_and_update_controls():
         return
 
     is_fast_processing = app_globals.fast_processing_active_flag.is_set()
+    log_debug(f"hide_loading_and_update_controls: is_fast_processing FLAG is currently {is_fast_processing}")
     model_loaded = app_globals.active_model_object_global is not None
     file_uploaded = bool(app_globals.uploaded_file_info and app_globals.uploaded_file_info.get('path'))
     is_video_file = file_uploaded and app_globals.uploaded_file_info.get('file_type', '') == 'video'
@@ -93,8 +94,14 @@ def hide_loading_and_update_controls():
     can_process_realtime = file_uploaded and model_loaded and not is_fast_processing
     if ui_comps.get("process_button"):
         ui_comps["process_button"].config(state="normal" if can_process_realtime else "disabled")
+    
+    # Fast process button should be disabled if fast processing is ongoing OR if conditions for starting it aren't met.
+    fast_process_btn_state = "disabled"
+    if can_process_realtime and is_video_file and not is_fast_processing:
+        fast_process_btn_state = "normal"
     if ui_comps.get("fast_process_button"):
-        ui_comps["fast_process_button"].config(state="normal" if (can_process_realtime and is_video_file) else "disabled")
+        ui_comps["fast_process_button"].config(state=fast_process_btn_state)
+
 
     is_video_playback_active = app_globals.is_playing_via_after_loop
                                
@@ -118,17 +125,19 @@ def hide_loading_and_update_controls():
             if is_video_playback_active:
                 play_text = "Pause" if not app_globals.video_paused_flag.is_set() else "Play"
                 play_state = "normal"; stop_state = "normal"
-            elif is_processed_video_ready_for_playback or \
-                 (is_video_file and app_globals.video_capture_global and app_globals.video_capture_global.isOpened()):
+            elif is_processed_video_ready_for_playback: 
                 play_text = "Play"; play_state = "normal"; stop_state = "normal"
-            elif is_video_file and not (app_globals.video_capture_global and app_globals.video_capture_global.isOpened()):
+            elif is_video_file and app_globals.video_capture_global and app_globals.video_capture_global.isOpened(): 
+                play_text = "Play"; play_state = "normal"; stop_state = "normal"
+            elif is_video_file: 
                 play_text = "Play"; play_state = "normal"; stop_state = "disabled"
+
 
             play_pause_btn.config(text=play_text, state=play_state)
             stop_btn.config(state=stop_state)
 
             meta_total_frames = app_globals.current_video_meta.get('total_frames', 0)
-            meta_fps_source = app_globals.current_video_meta.get('fps', 0) # Source FPS for duration calc
+            meta_fps_source = app_globals.current_video_meta.get('fps', 0) 
             meta_duration = app_globals.current_video_meta.get('duration_seconds', 0)
             current_frame_num = app_globals.current_video_meta.get('current_frame', 0)
 
@@ -145,10 +154,9 @@ def hide_loading_and_update_controls():
                 current_secs_for_time = actual_slider_pos / meta_fps_source if meta_fps_source > 0 else 0
                 time_lbl.config(text=format_time_display(current_secs_for_time, meta_duration))
                 
-                # Display real-time FPS if playing, otherwise source FPS or "--"
-                if is_video_playback_active:
+                if is_video_playback_active: # Displaying real-time calculated FPS
                     if fps_lbl: fps_lbl.config(text=f"FPS: {app_globals.real_time_fps_display_value:.2f}")
-                else:
+                else: # Displaying source FPS
                     if fps_lbl: fps_lbl.config(text=f"FPS: {meta_fps_source:.2f}" if meta_fps_source > 0 else "FPS: --")
                 
                 if current_frame_lbl: current_frame_lbl.config(text=f"Frame: {actual_slider_pos} / {meta_total_frames}")
@@ -171,9 +179,12 @@ def hide_loading_and_update_controls():
     fast_progress_frame = ui_comps.get("fast_progress_frame")
     if fast_progress_frame:
         if is_fast_processing:
+            log_debug("hide_loading_and_update_controls: Fast processing IS active, ensuring progress frame is packed.") 
             if not fast_progress_frame.winfo_ismapped():
                 fast_progress_frame.pack(fill="x", padx=config.SPACING_SMALL, pady=config.SPACING_SMALL, anchor="n")
+            if root and root.winfo_exists(): root.update_idletasks() 
         else:
+            log_debug("hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.")
             if fast_progress_frame.winfo_ismapped():
                 fast_progress_frame.pack_forget()
 
@@ -214,18 +225,16 @@ def update_progress(frame_idx):
         return
     
     def do_update():
-        # log_debug(f"update_progress: Setting is_programmatic_slider_update = True. Frame: {frame_idx}") # Reduced verbosity
         app_globals.is_programmatic_slider_update = True 
         try:
             progress_var = ui_comps.get("progress_var")
             if progress_var:
-                # log_debug(f"update_progress: Setting progress_var to {frame_idx}") # Reduced verbosity
                 progress_var.set(frame_idx) 
             
             current_time_secs = 0
             total_duration_secs = app_globals.current_video_meta.get('duration_seconds', 0)
             total_frames = app_globals.current_video_meta.get('total_frames', 0)
-            source_fps = app_globals.current_video_meta.get('fps', 0) # Source FPS for time display
+            source_fps = app_globals.current_video_meta.get('fps', 0) 
             if source_fps > 0:
                 current_time_secs = frame_idx / source_fps
             
@@ -243,13 +252,11 @@ def update_progress(frame_idx):
             if fps_label : 
                 fps_label.config(text=f"FPS: {app_globals.real_time_fps_display_value:.2f}")
 
-
         except Exception as e:
             log_debug(f"Exception in update_progress do_update: {e}", exc_info=True)
         finally:
             def reset_flag():
                  app_globals.is_programmatic_slider_update = False
-                 # log_debug(f"update_progress: Reset is_programmatic_slider_update = False (deferred). Frame: {frame_idx}") # Reduced verbosity
             root.after(5, reset_flag) 
 
     root.after(0, do_update) 
@@ -259,19 +266,29 @@ def update_fast_progress(progress_value):
     root = refs.get_root()
     ui_comps = refs.ui_components
     fast_progress_var = ui_comps.get("fast_progress_var")
+    log_debug(f"update_fast_progress called with value: {progress_value*100:.1f}%") 
     if fast_progress_var and root and root.winfo_exists():
         def do_update():
-            fast_progress_var.set(int(progress_value * 100))
+            current_val = int(progress_value * 100)
+            log_debug(f"update_fast_progress (do_update): Setting fast_progress_var to {current_val}") 
+            fast_progress_var.set(current_val)
+            if root and root.winfo_exists(): 
+                root.update() 
             
             if progress_value >= 1.0:
-                log_debug("Fast processing completed (reported by progress callback).")
+                log_debug("Fast processing 100% (update_fast_progress). Preparing to finalize.")
+                # The thread's finally block will clear fast_processing_active_flag.
+                # This call to hide_loading_and_update_controls will happen after that via the callback chain.
+                # If the flag is cleared by the thread *before* this callback is processed by root.after(0,...)
+                # then hide_loading_and_update_controls will see the correct state.
+                # For extra safety, ensure the flag is cleared before calling hide_loading.
                 app_globals.fast_processing_active_flag.clear()
+                log_debug("Fast processing 100% (update_fast_progress): Flag cleared. Updating controls.")
+                hide_loading_and_update_controls() 
                 print("Fast video processing complete. Ready for playback.")
                 fps_label = ui_comps.get("fps_label")
                 meta_fps = app_globals.current_video_meta.get('fps', 0)
-                if fps_label and meta_fps > 0: # Update with source FPS after fast processing
+                if fps_label and meta_fps > 0: 
                     fps_label.config(text=f"FPS: {meta_fps:.2f}")
-                
-                hide_loading_and_update_controls() 
         
         root.after(0, do_update)

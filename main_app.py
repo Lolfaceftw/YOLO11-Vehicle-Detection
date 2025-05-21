@@ -10,7 +10,7 @@ import threading
 
 from . import config
 from . import globals as app_globals 
-from .logger_setup import log_debug, setup_logging as app_setup_logging 
+from .logger_setup import log_debug # setup_logging is called by run_app.py
 from .model_loader import (
     load_model as initial_load_model, 
     get_available_model_keys, 
@@ -75,20 +75,33 @@ def place_ui_components_in_layout(left_panel_ref, right_panel_ref, ui_components
     right_panel_ref.rowconfigure(0, weight=1)  
     right_panel_ref.columnconfigure(0, weight=1)
 
-    # video_player_container now takes the full space allocated to it in the right panel
     ui_components_dict["video_player_container"].grid(row=0, column=0, sticky="nsew")
     
 
-def on_close(root_win):
-    """Handle window close event. """
-    log_debug("Application closing...")
+def on_close(root_win, from_exception=False):
+    """Handle window close event or program interruption. """
+    log_debug(f"on_close called. From exception: {from_exception}")
     
+    # Check if already in a stopping sequence to prevent recursion if _stop_all calls on_close
+    if hasattr(on_close, 'stopping') and on_close.stopping:
+        log_debug("on_close: Already stopping, returning.")
+        return
+    on_close.stopping = True
+
     from .tk_ui_callbacks import _stop_all_processing_logic 
     _stop_all_processing_logic()
     
     if root_win and root_win.winfo_exists():
+        log_debug("Destroying root window.")
         root_win.destroy()
-    log_debug("Root window destroyed.")
+    else:
+        log_debug("Root window does not exist or already destroyed.")
+    
+    log_debug("Application cleanup finished.")
+    delattr(on_close, 'stopping') # Reset flag
+
+    if from_exception: # If called due to an exception like KeyboardInterrupt, exit program
+        sys.exit(0)
 
 
 def launch_app():
@@ -158,8 +171,13 @@ def launch_app():
             root.after(0, hide_loading_and_update_controls) 
     
     log_debug("Starting Tkinter main loop...")
-    root.mainloop()
-    log_debug("Application exited main loop.")
+    try:
+        root.mainloop()
+    except KeyboardInterrupt:
+        log_debug("KeyboardInterrupt caught in main_app. Cleaning up...")
+        on_close(root, from_exception=True)
+    finally:
+        log_debug("Application exited main loop.")
 
 
 if __name__ == "__main__": 

@@ -20,10 +20,12 @@ _stop_all_processing_logic_ref = None
 def init_event_handlers(stop_logic_func):
     global _stop_all_processing_logic_ref
     _stop_all_processing_logic_ref = stop_logic_func
+    log_debug("Event handlers initialized.")
 
 
 def handle_file_upload():
     """Handle file upload button click."""
+    log_debug("handle_file_upload: 'Upload File' button pressed.")
     root = refs.get_root()
     ui_comps = refs.ui_components
     if not ui_comps or root is None or not root.winfo_exists():
@@ -41,10 +43,11 @@ def handle_file_upload():
     )
     
     if not file_path:
-        log_debug("No file selected.")
+        log_debug("handle_file_upload: No file selected.")
         return
 
     file_name = os.path.basename(file_path)
+    log_debug(f"handle_file_upload: File selected: {file_path}")
     if ui_comps.get("file_upload_label"):
         ui_comps["file_upload_label"].config(text=file_name if len(file_name) < 50 else file_name[:47]+"...")
     
@@ -59,33 +62,34 @@ def handle_file_upload():
 
 def handle_model_selection_change(*args):
     """Handle model selection change."""
+    selected_model_from_event = refs.ui_components["model_var"].get() 
+    log_debug(f"handle_model_selection_change: Model selection changed to '{selected_model_from_event}'. Args: {args}")
+    
     root = refs.get_root()
     ui_comps = refs.ui_components
-    log_debug("Model selection changed.")
-    
+        
     if not ui_comps or root is None or not root.winfo_exists():
         log_debug("Model selection: UI components or root window not available.")
         return
     
-    selected_model = ui_comps["model_var"].get()
+    selected_model = ui_comps["model_var"].get() 
     if not selected_model:
-        log_debug("No model selected.")
+        log_debug("No model selected after change event.")
         return
     
     if selected_model == app_globals.active_model_key and app_globals.active_model_object_global is not None:
-        log_debug(f"Model {selected_model} is already loaded and active.")
-        print(f"Model {selected_model} is already active.")
+        log_debug(f"Model {selected_model} is already loaded and active. No action taken.")
         return
 
-    log_debug(f"Selected model: {selected_model}")
+    log_debug(f"Selected model for loading: {selected_model}")
     async_logic.run_model_load_in_thread(selected_model, _stop_all_processing_logic_ref)
 
 
 def on_process_button_click(): 
     """Handle process button click for real-time video processing."""
+    log_debug("on_process_button_click: 'Process Real-time' button pressed.")
     root = refs.get_root()
     ui_comps = refs.ui_components
-    log_debug("Process button clicked (real-time video or image).")
     
     if not app_globals.uploaded_file_info.get('path'): 
         messagebox.showerror("Error", "Please upload a file first.")
@@ -133,11 +137,10 @@ def on_process_button_click():
             app_globals.video_paused_flag.clear()
             app_globals.is_playing_via_after_loop = True 
             
-            # Reset real-time FPS calculation for new playback
             app_globals.real_time_fps_frames_processed = 0
             app_globals.real_time_fps_last_update_time = time.perf_counter()
             app_globals.real_time_fps_display_value = 0.0
-            async_logic._last_frame_display_time_ns = time.perf_counter_ns() 
+            async_logic._last_frame_display_time_ns = 0 
 
             if app_globals.after_id_playback_loop: 
                 try: root.after_cancel(app_globals.after_id_playback_loop)
@@ -157,7 +160,7 @@ def on_process_button_click():
 
 def on_fast_process_button_click():
     """Handle fast process button click."""
-    log_debug("Fast process button clicked.")
+    log_debug("on_fast_process_button_click: 'Fast Process Video' button pressed.")
     
     if not app_globals.uploaded_file_info.get('path'):
         messagebox.showerror("Error", "Please upload a file first.")
@@ -169,6 +172,8 @@ def on_fast_process_button_click():
         messagebox.showerror("Error", "Fast processing is only available for video files.")
         return
     
+    _stop_all_processing_logic_ref()
+
     file_path = app_globals.uploaded_file_info.get('path')
     log_debug(f"Preparing for fast video processing: {file_path}")
     async_logic.run_fast_video_processing_in_thread(file_path, _stop_all_processing_logic_ref)
@@ -176,27 +181,29 @@ def on_fast_process_button_click():
 
 def toggle_play_pause():
     """Toggle video playback between play and pause. Can also initiate playback."""
+    log_debug("toggle_play_pause: 'Play/Pause' button pressed.")
     root = refs.get_root()
     ui_comps = refs.ui_components
-    log_debug("Play/Pause button clicked.")
-    
+        
     play_pause_btn = ui_comps.get("play_pause_button")
 
     if app_globals.is_playing_via_after_loop:
-        if app_globals.video_paused_flag.is_set():
+        if app_globals.video_paused_flag.is_set(): # Resuming
             app_globals.video_paused_flag.clear()
             if play_pause_btn: play_pause_btn.config(text="Pause")
             log_debug("Video playback resumed (root.after loop).")
-            # Reset time anchor for smooth resume
+            
             target_fps = app_globals.current_video_meta.get('fps', 30)
             target_fps = target_fps if target_fps > 0 else 30
             target_frame_duration_ns = int((1.0 / target_fps) * 1_000_000_000)
-            async_logic._last_frame_display_time_ns = time.perf_counter_ns() - \
-                (app_globals.current_video_meta.get('current_frame', 0) * target_frame_duration_ns)
-            # Reset real-time FPS calculation on resume
+            current_frame_at_resume = app_globals.current_video_meta.get('current_frame', 0)
+            # Re-anchor _last_frame_display_time_ns for the current frame, as if it's just about to be displayed
+            async_logic._last_frame_display_time_ns = time.perf_counter_ns() - target_frame_duration_ns 
+            
             app_globals.real_time_fps_last_update_time = time.perf_counter()
             app_globals.real_time_fps_frames_processed = 0
-        else:
+            log_debug(f"Resumed. FPS timers reset. Last display time re-anchored for frame {current_frame_at_resume}.")
+        else: # Pausing
             app_globals.video_paused_flag.set()
             if play_pause_btn: play_pause_btn.config(text="Play")
             log_debug("Video playback paused (root.after loop).")
@@ -211,12 +218,12 @@ def toggle_play_pause():
         video_path_to_play = is_processed_video_ready_path 
 
         try:
-            _stop_all_processing_logic_ref() 
+            # _stop_all_processing_logic_ref() # DO NOT CALL here when starting NEW processed video
             app_globals.stop_video_processing_flag.clear() 
             app_globals.video_paused_flag.clear()
             
             cap = None
-            for attempt in range(2): 
+            for attempt in range(3): # Increased retries slightly
                 with app_globals.video_access_lock:
                     if app_globals.video_capture_global and app_globals.video_capture_global.isOpened():
                         app_globals.video_capture_global.release() 
@@ -229,11 +236,11 @@ def toggle_play_pause():
                         break 
                     else:
                         log_debug(f"Failed to open processed video on attempt {attempt+1}. Path: {video_path_to_play}")
-                        if attempt == 0: 
-                            time.sleep(0.25) 
+                        if attempt < 2: # If not the last attempt
+                            time.sleep(0.3 * (attempt + 1)) # Slightly increasing delay
             
             if not app_globals.video_capture_global or not app_globals.video_capture_global.isOpened():
-                messagebox.showerror("Error", f"Could not open processed video file: {video_path_to_play}")
+                messagebox.showerror("Error", f"Could not open processed video file after retries: {video_path_to_play}")
                 if root and root.winfo_exists(): root.after(0, loading_manager.hide_loading_and_update_controls)
                 return
 
@@ -252,11 +259,10 @@ def toggle_play_pause():
                  ui_comps["progress_slider"].config(to=float(app_globals.current_video_meta['total_frames']-1))
             
             app_globals.is_playing_via_after_loop = True
-            # Reset real-time FPS calculation for new playback
             app_globals.real_time_fps_frames_processed = 0
             app_globals.real_time_fps_last_update_time = time.perf_counter()
             app_globals.real_time_fps_display_value = 0.0
-            async_logic._last_frame_display_time_ns = time.perf_counter_ns() 
+            async_logic._last_frame_display_time_ns = 0 
 
             if app_globals.after_id_playback_loop: 
                 try: root.after_cancel(app_globals.after_id_playback_loop)
@@ -288,8 +294,8 @@ def toggle_play_pause():
 
 def stop_video_stream_button_click():
     """Stop video playback or any ongoing video-related processing."""
+    log_debug("stop_video_stream_button_click: 'Stop' button pressed.")
     ui_comps = refs.ui_components
-    log_debug("Stop button clicked.")
     _stop_all_processing_logic_ref() 
     
     if ui_comps.get("video_display"): ui_comps["video_display"].clear()
@@ -303,7 +309,6 @@ def stop_video_stream_button_click():
     if ui_comps.get("time_label"):
          ui_comps["time_label"].config(text=async_logic.format_time_display(0, app_globals.current_video_meta.get('duration_seconds',0)))
     
-    # Reset FPS display on stop
     app_globals.real_time_fps_display_value = 0.0
     if ui_comps.get("fps_label"): ui_comps["fps_label"].config(text="FPS: --")
     if ui_comps.get("current_frame_label"): ui_comps["current_frame_label"].config(text="Frame: 0 / {}".format(app_globals.current_video_meta.get('total_frames', '--')))
@@ -314,9 +319,9 @@ def stop_video_stream_button_click():
 
 def handle_slider_value_change(*args): 
     """Handle changes to the progress slider variable (typically from dragging). Uses debouncing."""
+    log_debug(f"handle_slider_value_change (trace on var) triggered. Programmatic update flag: {app_globals.is_programmatic_slider_update}. Args: {args}")
     root = refs.get_root()
     ui_comps = refs.ui_components
-    log_debug(f"handle_slider_value_change (trace on var) triggered. Programmatic update flag: {app_globals.is_programmatic_slider_update}")
     
     if app_globals.is_programmatic_slider_update: 
         log_debug("Slider change is programmatic. No seek action from trace.")
@@ -350,7 +355,6 @@ def handle_slider_value_change(*args):
         ui_comps["time_label"].config(
             text=async_logic.format_time_display(current_time_secs, app_globals.current_video_meta.get('duration_seconds', 0))
         )
-    # Update current frame label during drag
     if ui_comps.get("current_frame_label"):
         ui_comps["current_frame_label"].config(text=f"Frame: {app_globals.slider_target_frame_value} / {app_globals.current_video_meta.get('total_frames', '--')}")
 
@@ -370,9 +374,9 @@ def handle_slider_value_change(*args):
 
 def handle_slider_click_release(event):
     """Handle LMB release on the progress slider for immediate seek (teleport)."""
+    log_debug(f"handle_slider_click_release (LMB Release) triggered. Event X: {event.x}")
     root = refs.get_root()
     ui_comps = refs.ui_components
-    log_debug(f"handle_slider_click_release (LMB Release) triggered. Event X: {event.x}")
 
     if app_globals.is_programmatic_slider_update:
         log_debug("Slider click release was flagged as programmatic. Ignoring.")
@@ -424,7 +428,7 @@ def handle_slider_click_release(event):
             if ui_comps.get("progress_var"):
                 ui_comps["progress_var"].set(target_frame)
         finally:
-            root.after(10, lambda: setattr(app_globals, 'is_programmatic_slider_update', False))
+            root.after_idle(lambda: setattr(app_globals, 'is_programmatic_slider_update', False))
             log_debug(f"Scheduled is_programmatic_slider_update=False after progress_var.set for click")
             
         log_debug(f"Initiating immediate seek thread for click to frame {target_frame}")
@@ -435,6 +439,7 @@ def handle_slider_click_release(event):
 
 def handle_iou_change(*args): 
     """Handle changes to the IoU threshold slider."""
+    log_debug(f"handle_iou_change: IoU slider changed. Args: {args}")
     ui_comps = refs.ui_components
     if not ui_comps: return
     try:
@@ -465,6 +470,7 @@ def handle_iou_change(*args):
 
 def handle_conf_change(*args): 
     """Handle changes to the confidence threshold slider."""
+    log_debug(f"handle_conf_change: Confidence slider changed. Args: {args}")
     ui_comps = refs.ui_components
     if not ui_comps: return
     try:
