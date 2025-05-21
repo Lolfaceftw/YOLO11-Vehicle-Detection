@@ -9,7 +9,7 @@ from . import _ui_shared_refs as refs
 from . import globals as app_globals
 from . import config
 from .logger_setup import log_debug
-from .tk_ui_elements import LoadingOverlay
+from .ui_custom_widgets import LoadingOverlay # Corrected import
 from .video_handler import format_time_display
 import os
 
@@ -160,7 +160,7 @@ def hide_loading_and_update_controls():
                 play_text = "Play"
                 play_btn_new_state_list = ['!disabled']
                 stop_btn_new_state_list = ['!disabled']
-            elif is_video_file: # File uploaded, but not opened/processed yet
+            elif is_video_file: 
                 play_text = "Play" 
                 play_btn_new_state_list = ['!disabled'] 
                 stop_btn_new_state_list = ['disabled'] 
@@ -245,7 +245,6 @@ def hide_loading_and_update_controls():
             fp_label_widget = ui_comps.get("fast_progress_label")
             if fp_label_widget and fp_label_widget.cget("text") == "Progress: 0% | --:--:-- Time Left":
                  log_debug("Fast progress label is default, ensuring it's visible and updated if processing.")
-                 # update_fast_progress will be called by the thread, this is just for initial show
                  fp_label_widget.config(text="Progress: 0% | Calculating..." if is_fast_processing else "Progress: 0% | --:--:-- Time Left")
 
 
@@ -257,7 +256,7 @@ def hide_loading_and_update_controls():
             if fast_progress_frame.winfo_ismapped():
                 fast_progress_frame.pack_forget()
             fp_label_widget = ui_comps.get("fast_progress_label")
-            if fp_label_widget: # Reset text when hiding
+            if fp_label_widget: 
                 fp_label_widget.config(text="Progress: 0% | --:--:-- Time Left")
 
 
@@ -358,7 +357,7 @@ def update_fast_progress(progress_value, time_left_str="--:--:--"):
 
             if fast_progress_label:
                 new_label_text = f"Progress: {current_val_int}% | {time_left_str} Time Left"
-                if progress_value >= 1.0 and time_left_str in ["Cancelled", "Error", "Invalid Video", "Writer Error", "Finished"]: # Added "Finished"
+                if progress_value >= 1.0 and time_left_str in ["Cancelled", "Error", "Invalid Video", "Writer Error", "Finished"]:
                     new_label_text = f"Fast Processing: {time_left_str}"
                 elif progress_value >= 1.0:
                      new_label_text = "Fast Processing: Complete"
