@@ -1,0 +1,37 @@
+2025-05-21 18:07:01,363 - DEBUG - MainThread - log_debug - run_app.py: main() executed. Debug mode from config: True
+2025-05-21 18:07:01,364 - DEBUG - MainThread - log_debug - Launching application...
+2025-05-21 18:07:01,459 - DEBUG - MainThread - log_debug - Placing UI components into layout...
+2025-05-21 18:07:01,459 - DEBUG - MainThread - log_debug - Setting up model selector...
+2025-05-21 18:07:01,460 - DEBUG - MainThread - log_debug - Event handlers initialized.
+2025-05-21 18:07:01,460 - DEBUG - MainThread - log_debug - Tkinter callbacks initialized.
+2025-05-21 18:07:01,483 - DEBUG - MainThread - log_debug - Calculated required window size: 1277x782
+2025-05-21 18:07:01,483 - DEBUG - MainThread - log_debug - Set root minsize to: 931x500
+2025-05-21 18:07:01,483 - DEBUG - MainThread - log_debug - --- Initializing Application --- Loading default model: YOLOv11x
+2025-05-21 18:07:01,483 - DEBUG - MainThread - log_debug - Showing loading overlay: Initializing with model: YOLOv11x...
+2025-05-21 18:07:01,526 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Attempting to load model: YOLOv11x
+2025-05-21 18:07:01,526 - DEBUG - MainThread - log_debug - Starting Tkinter main loop...
+2025-05-21 18:07:01,526 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Model config for YOLOv11x: C:\Users\Ck\vehicle-detection\Vehicle-detection-and-tracking-classwise-using-YOLO11\data\yolo11x.pt
+2025-05-21 18:07:01,540 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - CUDA is available for YOLOv11x.
+2025-05-21 18:07:02,181 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - YOLOv11x successfully configured for cuda.
+2025-05-21 18:07:02,182 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Updating processed class filter.
+2025-05-21 18:07:02,182 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Active model filtering for classes: ['bicycle', 'car', 'motorcycle', 'bus', 'truck']
+2025-05-21 18:07:02,182 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Model 'YOLOv11x' loaded. Classes: 80. Configured to run on: cuda.
+2025-05-21 18:07:02,183 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - load_model finished. Load successful: True
+2025-05-21 18:07:02,183 - DEBUG - MainThread - log_debug - Hiding loading overlay and updating controls.
+2025-05-21 18:07:02,188 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: is_fast_processing FLAG is currently False
+2025-05-21 18:07:02,188 - DEBUG - MainThread - log_debug - File Upload Button state set to: (), Effective style: Primary.TButton
+2025-05-21 18:07:02,188 - DEBUG - MainThread - log_debug - Process Real-time Button state set to: ('disabled',), Effective style: Primary.TButton
+2025-05-21 18:07:02,188 - DEBUG - MainThread - log_debug - Fast Process Button state set to: ('disabled',), Effective style: Secondary.TButton
+2025-05-21 18:07:02,189 - DEBUG - MainThread - log_debug - Play/Pause Button (no video controls) state: ('disabled',), Style: Primary.TButton
+2025-05-21 18:07:02,189 - DEBUG - MainThread - log_debug - Stop Button (no video controls) state: ('disabled',), Style: Secondary.TButton
+2025-05-21 18:07:02,189 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.
+2025-05-21 18:07:02,195 - DEBUG - MainThread - log_debug - Cleared video_display as controls are hidden, not fast processing, and not showing a processed static image.
+2025-05-21 18:07:02,202 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls finished.
+2025-05-21 18:07:58,833 - DEBUG - MainThread - log_debug - KeyboardInterrupt caught in main_app. Cleaning up...
+2025-05-21 18:07:58,833 - DEBUG - MainThread - log_debug - on_close called. From exception: True
+2025-05-21 18:07:58,833 - DEBUG - MainThread - log_debug - Stopping all video processing and playback logic.
+2025-05-21 18:07:58,833 - DEBUG - MainThread - log_debug - Attempting to cleanup temp file: None
+2025-05-21 18:07:58,833 - DEBUG - MainThread - log_debug - All processing logic stopped and resources potentially released.
+2025-05-21 18:07:58,833 - DEBUG - MainThread - log_debug - Destroying root window.
+2025-05-21 18:07:58,867 - DEBUG - MainThread - log_debug - Application cleanup finished.
+2025-05-21 18:07:58,867 - DEBUG - MainThread - log_debug - Application exited main loop.
