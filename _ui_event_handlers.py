@@ -81,7 +81,7 @@ def handle_model_selection_change(*args):
     async_logic.run_model_load_in_thread(selected_model, _stop_all_processing_logic_ref)
 
 
-def on_process_button_click(): # For real-time video
+def on_process_button_click(): 
     """Handle process button click for real-time video processing."""
     root = refs.get_root()
     ui_comps = refs.ui_components
@@ -131,9 +131,14 @@ def on_process_button_click(): # For real-time video
             
             app_globals.stop_video_processing_flag.clear()
             app_globals.video_paused_flag.clear()
-            app_globals.is_playing_via_after_loop = True # Corrected flag name
+            app_globals.is_playing_via_after_loop = True 
             
+            # Reset real-time FPS calculation for new playback
+            app_globals.real_time_fps_frames_processed = 0
+            app_globals.real_time_fps_last_update_time = time.perf_counter()
+            app_globals.real_time_fps_display_value = 0.0
             async_logic._last_frame_display_time_ns = time.perf_counter_ns() 
+
             if app_globals.after_id_playback_loop: 
                 try: root.after_cancel(app_globals.after_id_playback_loop)
                 except: pass
@@ -177,17 +182,20 @@ def toggle_play_pause():
     
     play_pause_btn = ui_comps.get("play_pause_button")
 
-    # Corrected flag name here
     if app_globals.is_playing_via_after_loop:
         if app_globals.video_paused_flag.is_set():
             app_globals.video_paused_flag.clear()
             if play_pause_btn: play_pause_btn.config(text="Pause")
             log_debug("Video playback resumed (root.after loop).")
+            # Reset time anchor for smooth resume
             target_fps = app_globals.current_video_meta.get('fps', 30)
             target_fps = target_fps if target_fps > 0 else 30
             target_frame_duration_ns = int((1.0 / target_fps) * 1_000_000_000)
             async_logic._last_frame_display_time_ns = time.perf_counter_ns() - \
                 (app_globals.current_video_meta.get('current_frame', 0) * target_frame_duration_ns)
+            # Reset real-time FPS calculation on resume
+            app_globals.real_time_fps_last_update_time = time.perf_counter()
+            app_globals.real_time_fps_frames_processed = 0
         else:
             app_globals.video_paused_flag.set()
             if play_pause_btn: play_pause_btn.config(text="Play")
@@ -243,8 +251,13 @@ def toggle_play_pause():
             if ui_comps.get("progress_slider") and app_globals.current_video_meta['total_frames'] > 0:
                  ui_comps["progress_slider"].config(to=float(app_globals.current_video_meta['total_frames']-1))
             
-            app_globals.is_playing_via_after_loop = True # Corrected flag name
+            app_globals.is_playing_via_after_loop = True
+            # Reset real-time FPS calculation for new playback
+            app_globals.real_time_fps_frames_processed = 0
+            app_globals.real_time_fps_last_update_time = time.perf_counter()
+            app_globals.real_time_fps_display_value = 0.0
             async_logic._last_frame_display_time_ns = time.perf_counter_ns() 
+
             if app_globals.after_id_playback_loop: 
                 try: root.after_cancel(app_globals.after_id_playback_loop)
                 except: pass
@@ -289,6 +302,13 @@ def stop_video_stream_button_click():
             
     if ui_comps.get("time_label"):
          ui_comps["time_label"].config(text=async_logic.format_time_display(0, app_globals.current_video_meta.get('duration_seconds',0)))
+    
+    # Reset FPS display on stop
+    app_globals.real_time_fps_display_value = 0.0
+    if ui_comps.get("fps_label"): ui_comps["fps_label"].config(text="FPS: --")
+    if ui_comps.get("current_frame_label"): ui_comps["current_frame_label"].config(text="Frame: 0 / {}".format(app_globals.current_video_meta.get('total_frames', '--')))
+
+
     loading_manager.hide_loading_and_update_controls()
 
 
@@ -330,6 +350,10 @@ def handle_slider_value_change(*args):
         ui_comps["time_label"].config(
             text=async_logic.format_time_display(current_time_secs, app_globals.current_video_meta.get('duration_seconds', 0))
         )
+    # Update current frame label during drag
+    if ui_comps.get("current_frame_label"):
+        ui_comps["current_frame_label"].config(text=f"Frame: {app_globals.slider_target_frame_value} / {app_globals.current_video_meta.get('total_frames', '--')}")
+
     
     if app_globals.slider_debounce_timer:
         try: root.after_cancel(app_globals.slider_debounce_timer)

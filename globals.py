@@ -10,6 +10,11 @@ video_access_lock = threading.Lock()
 is_playing_via_after_loop = False 
 after_id_playback_loop = None 
 
+# --- FPS Counter Globals ---
+real_time_fps_frames_processed = 0
+real_time_fps_last_update_time = 0.0
+real_time_fps_display_value = 0.0
+
 # --- Global State for Fast (Batch) Video Processing ---\n",
 fast_video_processing_thread = None
 stop_fast_processing_flag = threading.Event()
@@ -36,5 +41,4 @@ device_to_use = 'cpu'
 current_video_meta = {'fps': 0.0, 'total_frames': 0, 'duration_seconds': 0.0, 'current_frame': 0} 
 uploaded_file_info = {} 
 
-# main_output_area_widget = None # Removed as console output box is removed
 current_processed_image_for_display = None 

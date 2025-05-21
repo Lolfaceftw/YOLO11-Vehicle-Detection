@@ -32,9 +32,14 @@ def _video_playback_loop(process_frames_real_time: bool):
     if app_globals.stop_video_processing_flag.is_set() or not app_globals.is_playing_via_after_loop:
         log_debug("Stopping video playback loop (flag set or mode changed).")
         app_globals.is_playing_via_after_loop = False 
+        app_globals.real_time_fps_display_value = 0.0 # Reset FPS on stop
+        if ui_comps.get("fps_label"): ui_comps["fps_label"].config(text="FPS: --")
         return
 
     if app_globals.video_paused_flag.is_set():
+        # Reset last update time for FPS calc when resuming to avoid skewed FPS due to pause duration
+        app_globals.real_time_fps_last_update_time = time.perf_counter()
+        app_globals.real_time_fps_frames_processed = 0
         app_globals.after_id_playback_loop = root.after(50, lambda: _video_playback_loop(process_frames_real_time))
         return
 
@@ -56,9 +61,20 @@ def _video_playback_loop(process_frames_real_time: bool):
         log_debug(f"Video playback: End of video or read error at frame {current_frame_pos_from_cv}.")
         app_globals.stop_video_processing_flag.set() 
         app_globals.is_playing_via_after_loop = False
+        app_globals.real_time_fps_display_value = 0.0 # Reset FPS on stop
+        if ui_comps.get("fps_label"): ui_comps["fps_label"].config(text="FPS: --")
         if ui_comps.get("play_pause_button"): ui_comps["play_pause_button"].config(text="Play")
         loading_manager.hide_loading_and_update_controls()
         return
+
+    # Increment processed frames for real-time FPS calculation
+    app_globals.real_time_fps_frames_processed += 1
+    current_time_fps_calc = time.perf_counter()
+    if current_time_fps_calc - app_globals.real_time_fps_last_update_time >= 1.0: # Update FPS display every 1 second
+        time_delta = current_time_fps_calc - app_globals.real_time_fps_last_update_time
+        app_globals.real_time_fps_display_value = app_globals.real_time_fps_frames_processed / time_delta
+        app_globals.real_time_fps_frames_processed = 0
+        app_globals.real_time_fps_last_update_time = current_time_fps_calc
 
     if process_frames_real_time and app_globals.active_model_object_global and output_frame is not None:
         try:
@@ -75,7 +91,7 @@ def _video_playback_loop(process_frames_real_time: bool):
     from ._ui_loading_manager import update_progress 
     if ui_comps.get("video_display") and output_frame is not None:
         ui_comps["video_display"].update_frame(output_frame) 
-    update_progress(current_frame_pos_from_cv) # This will also update the new current_frame_label
+    update_progress(current_frame_pos_from_cv) 
 
     target_fps = app_globals.current_video_meta.get('fps', 30)
     if target_fps <= 0: target_fps = 30
@@ -87,7 +103,7 @@ def _video_playback_loop(process_frames_real_time: bool):
     delay_ns = target_frame_duration_ns - time_since_last_frame_ns
     delay_ms = max(1, int(delay_ns / 1_000_000)) 
 
-    _last_frame_display_time_ns = current_time_ns + delay_ns # Predict next ideal display time
+    _last_frame_display_time_ns = current_time_ns + delay_ns 
     
     app_globals.after_id_playback_loop = root.after(delay_ms, lambda: _video_playback_loop(process_frames_real_time))
 
@@ -159,7 +175,6 @@ def _process_uploaded_file_in_thread(file_path, stop_processing_logic_func):
             
             if root and root.winfo_exists() and ui_comps.get("video_display"):
                 root.after(0, lambda bound_img=display_img: ui_comps["video_display"].update_frame(bound_img))
-            # Update FPS and Frame labels for image (FPS not applicable, Total Frames = 1)
             if root and root.winfo_exists():
                 def update_image_info_labels():
                     if ui_comps.get("fps_label"): ui_comps["fps_label"].config(text="FPS: N/A")
@@ -220,8 +235,7 @@ def _process_uploaded_file_in_thread(file_path, stop_processing_logic_func):
                                 ui_comps["progress_var"].set(0)
                             finally:
                                 app_globals.is_programmatic_slider_update = False
-                        # Update new labels
-                        if ui_comps.get("fps_label"): ui_comps["fps_label"].config(text=f"FPS: {fps:.2f}")
+                        if ui_comps.get("fps_label"): ui_comps["fps_label"].config(text=f"FPS: {fps:.2f}") # Show source FPS initially
                         if ui_comps.get("current_frame_label"): ui_comps["current_frame_label"].config(text=f"Frame: 0 / {total_frames}")
                         
                         loading_manager.hide_loading_and_update_controls()
@@ -287,10 +301,14 @@ def _perform_seek_action_in_thread():
                 app_globals.current_video_meta['current_frame'] = target_frame 
 
                 global _last_frame_display_time_ns 
-                target_fps = app_globals.current_video_meta.get('fps', 30)
-                if target_fps <= 0: target_fps = 30
-                target_frame_duration_ns = int((1.0 / target_fps) * 1_000_000_000)
-                _last_frame_display_time_ns = time.perf_counter_ns() - (target_frame * target_frame_duration_ns)
+                target_fps_meta = app_globals.current_video_meta.get('fps', 30)
+                if target_fps_meta <= 0: target_fps_meta = 30
+                target_frame_duration_ns_meta = int((1.0 / target_fps_meta) * 1_000_000_000)
+                _last_frame_display_time_ns = time.perf_counter_ns() - (target_frame * target_frame_duration_ns_meta)
+                # Reset real-time FPS calculation on seek
+                app_globals.real_time_fps_last_update_time = time.perf_counter()
+                app_globals.real_time_fps_frames_processed = 0
+                app_globals.real_time_fps_display_value = 0.0
 
 
                 is_real_time_mode = not (app_globals.processed_video_temp_file_path_global and \
@@ -305,12 +323,11 @@ def _perform_seek_action_in_thread():
                     )
                 
                 if root and root.winfo_exists():
-                    from ._ui_loading_manager import update_progress # Moved here
+                    from ._ui_loading_manager import update_progress 
                     def update_ui_after_seek_from_thread():
                         if ui_comps.get("video_display"):
                             ui_comps["video_display"].update_frame(output_frame_on_seek)
                         
-                        # Update progress (which also updates frame label)
                         update_progress(target_frame)
                         
                         loading_manager.hide_loading_and_update_controls()
@@ -386,7 +403,6 @@ def run_image_processing_in_thread(file_path):
                 def update_ui_after_img_proc():
                     if ui_comps.get("video_display"): ui_comps["video_display"].update_frame(processed_img)
                     print(f"Processed image. Detected {detected_count} objects.")
-                    # Update info labels for image
                     if ui_comps.get("fps_label"): ui_comps["fps_label"].config(text="FPS: N/A")
                     if ui_comps.get("current_frame_label"): ui_comps["current_frame_label"].config(text="Frame: 1 / 1")
                     loading_manager.hide_loading_and_update_controls()
@@ -410,7 +426,11 @@ def run_fast_video_processing_in_thread(file_path, stop_processing_logic_func):
 
     def fast_process_task():
         try:
-            if app_globals.current_video_meta.get('total_frames', 0) == 0: # Or if path changed
+            # Reset source FPS display before starting, as it might be from a previous video
+            if root and root.winfo_exists() and ui_comps.get("fps_label"):
+                root.after(0, lambda: ui_comps["fps_label"].config(text="FPS: --"))
+
+            if app_globals.current_video_meta.get('total_frames', 0) == 0: 
                 temp_cap = cv2.VideoCapture(file_path)
                 if temp_cap.isOpened():
                     app_globals.current_video_meta['fps'] = temp_cap.get(cv2.CAP_PROP_FPS)
@@ -418,9 +438,6 @@ def run_fast_video_processing_in_thread(file_path, stop_processing_logic_func):
                     app_globals.current_video_meta['duration_seconds'] = \
                         app_globals.current_video_meta['total_frames'] / app_globals.current_video_meta['fps'] if app_globals.current_video_meta['fps'] > 0 else 0
                     temp_cap.release()
-                     # Update FPS label after fast processing metadata is known
-                    if root and root.winfo_exists() and ui_comps.get("fps_label"):
-                        root.after(0, lambda: ui_comps["fps_label"].config(text=f"FPS: {app_globals.current_video_meta['fps']:.2f}"))
                 else: raise ValueError(f"Fast Process: Could not open video for metadata: {file_path}")
             
             app_globals.stop_fast_processing_flag.clear()

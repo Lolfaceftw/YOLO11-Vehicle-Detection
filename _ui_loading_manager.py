@@ -128,34 +128,38 @@ def hide_loading_and_update_controls():
             stop_btn.config(state=stop_state)
 
             meta_total_frames = app_globals.current_video_meta.get('total_frames', 0)
-            meta_fps = app_globals.current_video_meta.get('fps', 0)
+            meta_fps_source = app_globals.current_video_meta.get('fps', 0) # Source FPS for duration calc
             meta_duration = app_globals.current_video_meta.get('duration_seconds', 0)
             current_frame_num = app_globals.current_video_meta.get('current_frame', 0)
 
 
             if meta_total_frames > 0:
                 prog_slider.config(state="normal", to=float(meta_total_frames - 1 if meta_total_frames > 0 else 0))
-                if not is_video_playback_active: # If not playing, ensure slider reflects current_frame_num
-                    # This is important if stopped or after seek and not playing
+                if not is_video_playback_active: 
                     if prog_var.get() != current_frame_num:
                         app_globals.is_programmatic_slider_update = True
                         try: prog_var.set(current_frame_num)
                         finally: app_globals.is_programmatic_slider_update = False
                 
-                # Update time and frame labels based on prog_var's value (which reflects current_frame_num or user drag)
                 actual_slider_pos = prog_var.get()
-                current_secs_for_time = actual_slider_pos / meta_fps if meta_fps > 0 else 0
+                current_secs_for_time = actual_slider_pos / meta_fps_source if meta_fps_source > 0 else 0
                 time_lbl.config(text=format_time_display(current_secs_for_time, meta_duration))
-                if fps_lbl: fps_lbl.config(text=f"FPS: {meta_fps:.2f}" if meta_fps > 0 else "FPS: --")
+                
+                # Display real-time FPS if playing, otherwise source FPS or "--"
+                if is_video_playback_active:
+                    if fps_lbl: fps_lbl.config(text=f"FPS: {app_globals.real_time_fps_display_value:.2f}")
+                else:
+                    if fps_lbl: fps_lbl.config(text=f"FPS: {meta_fps_source:.2f}" if meta_fps_source > 0 else "FPS: --")
+                
                 if current_frame_lbl: current_frame_lbl.config(text=f"Frame: {actual_slider_pos} / {meta_total_frames}")
 
-            else: # No video loaded or no frames
+            else: 
                 prog_slider.config(state="disabled", to=100.0)
                 if prog_var.get() != 0: prog_var.set(0)
                 time_lbl.config(text="00:00 / 00:00")
                 if fps_lbl: fps_lbl.config(text="FPS: --")
                 if current_frame_lbl: current_frame_lbl.config(text="Frame: -- / --")
-        else: # Video controls should not be shown
+        else: 
             play_pause_btn.config(text="Play", state="disabled")
             stop_btn.config(state="disabled")
             prog_slider.config(state="disabled", to=100.0)
@@ -175,7 +179,7 @@ def hide_loading_and_update_controls():
 
     video_controls_frame = ui_comps.get("video_controls_frame")
     progress_frame = ui_comps.get("progress_frame")
-    video_info_frame = ui_comps.get("video_info_subframe") # Get the new frame
+    video_info_frame = ui_comps.get("video_info_subframe") 
 
     if video_controls_frame and progress_frame and video_info_frame:
         if should_show_video_controls_ui:
@@ -183,12 +187,12 @@ def hide_loading_and_update_controls():
                 video_controls_frame.grid(row=0, column=0, sticky="ew", padx=2, pady=(2,0))
             if not progress_frame.winfo_ismapped():
                 progress_frame.grid(row=1, column=0, sticky="ew", padx=2, pady=(0,2))
-            if not video_info_frame.winfo_ismapped(): # Show video info
+            if not video_info_frame.winfo_ismapped(): 
                 video_info_frame.grid(row=3, column=0, sticky="ew", padx=config.SPACING_SMALL, pady=(config.SPACING_SMALL, config.SPACING_SMALL))
         else:
             if video_controls_frame.winfo_ismapped(): video_controls_frame.grid_remove()
             if progress_frame.winfo_ismapped(): progress_frame.grid_remove()
-            if video_info_frame.winfo_ismapped(): video_info_frame.grid_remove() # Hide video info
+            if video_info_frame.winfo_ismapped(): video_info_frame.grid_remove() 
     
     video_display = ui_comps.get("video_display")
     if video_display and not should_show_video_controls_ui and not is_fast_processing:
@@ -210,20 +214,20 @@ def update_progress(frame_idx):
         return
     
     def do_update():
-        log_debug(f"update_progress: Setting is_programmatic_slider_update = True. Frame: {frame_idx}")
+        # log_debug(f"update_progress: Setting is_programmatic_slider_update = True. Frame: {frame_idx}") # Reduced verbosity
         app_globals.is_programmatic_slider_update = True 
         try:
             progress_var = ui_comps.get("progress_var")
             if progress_var:
-                log_debug(f"update_progress: Setting progress_var to {frame_idx}")
-                progress_var.set(frame_idx) # This will trigger its trace if any
+                # log_debug(f"update_progress: Setting progress_var to {frame_idx}") # Reduced verbosity
+                progress_var.set(frame_idx) 
             
             current_time_secs = 0
             total_duration_secs = app_globals.current_video_meta.get('duration_seconds', 0)
             total_frames = app_globals.current_video_meta.get('total_frames', 0)
-            fps = app_globals.current_video_meta.get('fps', 0)
-            if fps > 0:
-                current_time_secs = frame_idx / fps
+            source_fps = app_globals.current_video_meta.get('fps', 0) # Source FPS for time display
+            if source_fps > 0:
+                current_time_secs = frame_idx / source_fps
             
             time_label = ui_comps.get("time_label")
             if time_label:
@@ -231,16 +235,13 @@ def update_progress(frame_idx):
                     text=format_time_display(current_time_secs, total_duration_secs)
                 )
             
-            # Update new current frame label
             current_frame_label = ui_comps.get("current_frame_label")
             if current_frame_label:
                 current_frame_label.config(text=f"Frame: {frame_idx} / {total_frames}")
             
-            # FPS label is typically static once video loaded, but can be refreshed here if needed
             fps_label = ui_comps.get("fps_label")
-            if fps_label and fps > 0 : # Only update if FPS is known
-                 if fps_label.cget("text") == "FPS: --": # Update if it's the default
-                    fps_label.config(text=f"FPS: {fps:.2f}")
+            if fps_label : 
+                fps_label.config(text=f"FPS: {app_globals.real_time_fps_display_value:.2f}")
 
 
         except Exception as e:
@@ -248,7 +249,7 @@ def update_progress(frame_idx):
         finally:
             def reset_flag():
                  app_globals.is_programmatic_slider_update = False
-                 log_debug(f"update_progress: Reset is_programmatic_slider_update = False (deferred). Frame: {frame_idx}")
+                 # log_debug(f"update_progress: Reset is_programmatic_slider_update = False (deferred). Frame: {frame_idx}") # Reduced verbosity
             root.after(5, reset_flag) 
 
     root.after(0, do_update) 
@@ -266,10 +267,9 @@ def update_fast_progress(progress_value):
                 log_debug("Fast processing completed (reported by progress callback).")
                 app_globals.fast_processing_active_flag.clear()
                 print("Fast video processing complete. Ready for playback.")
-                # Update FPS label now that fast processing (which gets metadata) is done
                 fps_label = ui_comps.get("fps_label")
                 meta_fps = app_globals.current_video_meta.get('fps', 0)
-                if fps_label and meta_fps > 0:
+                if fps_label and meta_fps > 0: # Update with source FPS after fast processing
                     fps_label.config(text=f"FPS: {meta_fps:.2f}")
                 
                 hide_loading_and_update_controls() 
