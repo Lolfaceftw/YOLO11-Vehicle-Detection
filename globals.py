@@ -17,6 +17,7 @@ fast_processing_active_flag = threading.Event()
 # --- Global State for Slider Debouncing ---\n",
 slider_debounce_timer = None
 slider_target_frame_value = 0 # Target frame for debounced seek
+is_programmatic_slider_update = False # Flag to indicate if slider update is from code
 
 # --- Global State for Model Management and Thresholds ---\n",
 iou_threshold_global = 0.45 # Current IoU threshold
@@ -26,8 +27,6 @@ conf_threshold_global = 0.25 # Current Confidence threshold
 # active_model_key, active_model_object_global, active_class_list_global,
 # active_processed_class_filter_global, device_to_use will also be managed by model_loader.py
 # and accessed via its functions or stored here if truly global access is simpler.
-# For now, let model_loader manage them internally and expose via getters if needed,
-# or ui_callbacks can update them here after model_loader operations.
 
 # Let's define them here for now as they are accessed/modified by callbacks directly
 # based on model_loader's results.
@@ -40,23 +39,11 @@ device_to_use = 'cpu'
 
 # --- UI State and File Info ---\n",
 # current_video_meta stores {'fps': 0.0, 'total_frames': 0, 'duration_seconds': 0.0}
-current_video_meta = {'fps': 0.0, 'total_frames': 0, 'duration_seconds': 0.0}
-uploaded_file_info = {} # Stores info of the last uploaded file
+current_video_meta = {'fps': 0.0, 'total_frames': 0, 'duration_seconds': 0.0, 'current_frame': 0} # Added current_frame
+uploaded_file_info = {} # Stores info of the last uploaded file (path, name, type, file_type, content for ipywidgets)
+                        # For Tkinter, content might not be stored globally if read on demand.
+                        # Let's assume 'path' is the primary key for Tkinter.
 
-# References to specific UI widgets that need to be globally accessible for updates
-# These will be assigned when UI elements are created in main_app.py
-ui_stack_widget = None
-main_output_area_widget = None
-processed_image_display_area_widget = None
+main_output_area_widget = None 
 
-# Video player specific widgets that are frequently managed by threads/callbacks
-# These will also be assigned from ui_elements instances
-video_display_widget_ref = None
-play_pause_button_ref = None
-stop_button_ref = None
-progress_slider_ref = None
-time_label_ref = None
-fast_progress_bar_ref = None
-
-# UI-related globals are no longer needed here as they're managed by the Tkinter implementation
-# The Tkinter UI components are managed in tk_ui_callbacks.py using a dictionary
+current_processed_image_for_display = None # Stores the currently displayed/processed image (numpy array) for static images
