@@ -5,8 +5,8 @@ Contains custom Tkinter widget classes for the application.
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
-import cv2 # Keep cv2 import if VideoDisplayFrame uses it directly, otherwise remove
-# import numpy as np # Not directly used here, but VideoDisplayFrame might imply its use via cv2
+import cv2 
+import math 
 from . import config
 
 class LoadingOverlay(tk.Toplevel):
@@ -22,33 +22,92 @@ class LoadingOverlay(tk.Toplevel):
         self.attributes("-alpha", config.OVERLAY_ALPHA)
         self.transient(parent_window)
         self.overrideredirect(True)
+        
         self.content_frame = ttk.Frame(self, style="Overlay.TFrame")
         self.content_frame.place(relx=0.5, rely=0.5, anchor="center")
+
         padding_frame = ttk.Frame(self.content_frame, style="Overlay.TFrame", padding=config.SPACING_LARGE)
         padding_frame.pack()
-        self.animation_frames_list = config.UNICODE_SPINNER_FRAMES
-        self.current_animation_idx = 0
-        self.spinner_label = ttk.Label(padding_frame, text=self.animation_frames_list[0], style="Overlay.TLabel", font=config.FONT_SPINNER)
-        self.spinner_label.pack(pady=(0, config.SPACING_MEDIUM))
-        self.status_message_label = ttk.Label(padding_frame, text=message, style="Overlay.TLabel", font=config.FONT_MESSAGE_OVERLAY)
+
+        self.spinner_canvas_size = (config.COE_SPINNER_RADIUS + 15) * 2 
+        self.spinner_canvas = tk.Canvas(
+            padding_frame,
+            width=self.spinner_canvas_size,
+            height=self.spinner_canvas_size,
+            bg=config.OVERLAY_FRAME_COLOR, 
+            highlightthickness=0
+        )
+        self.spinner_canvas.pack(pady=(0, config.SPACING_MEDIUM))
+        
+        self.status_message_label = ttk.Label(
+            padding_frame,
+            text=message,
+            style="Overlay.TLabel", 
+            font=config.FONT_MESSAGE_OVERLAY
+        )
         self.status_message_label.pack()
-        self._start_animation()
+
+        self.coe_spinner_angle = 0 # Initial overall rotation angle
+        self.coe_spinner_text_items = []
+        self._setup_coe_spinner_text()
+        
+        self._animate_coe_spinner()
+
         parent_window.bind("<Configure>", self.update_position_and_size, add="+")
+        
         self.update_idletasks()
         self.lift()
         self.grab_set()
+
+    def _setup_coe_spinner_text(self):
+        """Create initial text items for the CoE spinner."""
+        center_x = self.spinner_canvas_size / 2
+        center_y = self.spinner_canvas_size / 2
+        
+        for i, char in enumerate(config.COE_SPINNER_TEXT):
+            item = self.spinner_canvas.create_text(
+                center_x, center_y, # Placeholder, will be updated by _animate_coe_spinner
+                text=char,
+                font=config.FONT_COE_SPINNER,
+                fill="black" 
+            )
+            self.coe_spinner_text_items.append(item)
+
+    def _animate_coe_spinner(self):
+        if not self.winfo_exists(): return
+
+        center_x = self.spinner_canvas_size / 2
+        center_y = self.spinner_canvas_size / 2
+        radius = config.COE_SPINNER_RADIUS
+        num_chars = len(config.COE_SPINNER_TEXT)
+
+        for i, item_id in enumerate(self.coe_spinner_text_items):
+            # Angle for each character, distributed around the circle
+            char_angle_offset_deg = (360 / num_chars) * i
+            
+            # Effective angle for this character: initial offset + overall rotation
+            # To make 'C' (index 0) start at the top (270 deg or -90 deg), we adjust the angle.
+            # Standard math angles: 0=right, 90=up. Tkinter canvas: 0=right, Y grows downwards.
+            # So, for top, we need an angle of -90 degrees (or 270).
+            effective_angle_deg = self.coe_spinner_angle + char_angle_offset_deg - 90
+            
+            effective_angle_rad = math.radians(effective_angle_deg)
+            
+            x = center_x + radius * math.cos(effective_angle_rad)
+            y = center_y + radius * math.sin(effective_angle_rad) # sin handles Y correctly for math angles
+            
+            self.spinner_canvas.coords(item_id, x, y)
+
+        self.coe_spinner_angle = (self.coe_spinner_angle + config.COE_SPINNER_ROTATION_STEP) % 360
+        
+        self.animation_job_id = self.after(config.COE_SPINNER_DELAY_MS, self._animate_coe_spinner)
+
 
     def update_position_and_size(self, event=None):
         if not self.winfo_exists() or not self.parent_window_ref.winfo_exists():
             if self.animation_job_id: self.after_cancel(self.animation_job_id); self.animation_job_id = None
             return
         self.geometry(f"{self.parent_window_ref.winfo_width()}x{self.parent_window_ref.winfo_height()}+{self.parent_window_ref.winfo_x()}+{self.parent_window_ref.winfo_y()}")
-
-    def _start_animation(self):
-        if not self.winfo_exists(): return
-        self.current_animation_idx = (self.current_animation_idx + 1) % len(self.animation_frames_list)
-        self.spinner_label.config(text=self.animation_frames_list[self.current_animation_idx])
-        self.animation_job_id = self.after(config.UNICODE_SPINNER_DELAY_MS, self._start_animation)
 
     def update_message(self, new_message):
         if self.winfo_exists(): self.status_message_label.config(text=new_message)
@@ -68,7 +127,7 @@ class VideoDisplayFrame(ttk.Frame):
         self.display_label = ttk.Label(self, background=config.COLOR_BACKGROUND_LIGHT)
         self.display_label.pack(expand=True, fill="both")
         self.current_photo_image = None
-        self.last_displayed_frame_raw = None # Stores the raw cv2 frame
+        self.last_displayed_frame_raw = None 
         self.target_width = initial_width
         self.target_height = initial_height
         self._update_empty_display()
@@ -76,7 +135,7 @@ class VideoDisplayFrame(ttk.Frame):
 
     def _on_resize_display(self, event):
         if abs(event.width - self.target_width) > 2 or abs(event.height - self.target_height) > 2:
-            if event.width > 10 and event.height > 10: # Avoid resizing to tiny dimensions
+            if event.width > 10 and event.height > 10: 
                 self.target_width = event.width
                 self.target_height = event.height
                 if self.last_displayed_frame_raw is not None:
@@ -114,7 +173,7 @@ class VideoDisplayFrame(ttk.Frame):
             new_height = self.target_height
             new_width = int(new_height * aspect_ratio)
         
-        new_width = max(1, new_width) # Ensure dimensions are at least 1
+        new_width = max(1, new_width) 
         new_height = max(1, new_height)
 
         resized_pil_image = pil_image_original.resize((new_width, new_height), Image.Resampling.LANCZOS)
@@ -123,7 +182,6 @@ class VideoDisplayFrame(ttk.Frame):
         self.display_label.config(image=self.current_photo_image)
 
     def update_frame(self, new_cv2_frame_bgr):
-        # Store a copy of the raw frame for resizing later if needed
         self.last_displayed_frame_raw = new_cv2_frame_bgr.copy() if new_cv2_frame_bgr is not None else None
         self._display_cv2_frame(self.last_displayed_frame_raw)
     
