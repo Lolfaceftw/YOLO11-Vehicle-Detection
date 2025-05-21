@@ -1,374 +1,466 @@
-2025-05-22 00:31:51,900 - DEBUG - MainThread - log_debug - run_app.py: main() executed. Debug mode from config: True
-2025-05-22 00:31:51,900 - DEBUG - MainThread - log_debug - Launching application...
-2025-05-22 00:31:52,012 - DEBUG - MainThread - log_debug - Placing UI components into layout...
-2025-05-22 00:31:52,012 - DEBUG - MainThread - log_debug - Setting up model selector...
-2025-05-22 00:31:52,013 - DEBUG - MainThread - log_debug - Event handlers initialized.
-2025-05-22 00:31:52,013 - DEBUG - MainThread - log_debug - Tkinter callbacks initialized.
-2025-05-22 00:31:52,032 - DEBUG - MainThread - log_debug - Calculated required window size: 1277x782
-2025-05-22 00:31:52,032 - DEBUG - MainThread - log_debug - Set root minsize to: 931x500
-2025-05-22 00:31:52,032 - DEBUG - MainThread - log_debug - --- Initializing Application --- Loading default model: YOLOv11x
-2025-05-22 00:31:52,032 - DEBUG - MainThread - log_debug - Showing loading overlay: Initializing with model: YOLOv11x...
-2025-05-22 00:31:52,089 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Attempting to load model: YOLOv11x
-2025-05-22 00:31:52,089 - DEBUG - MainThread - log_debug - Starting Tkinter main loop...
-2025-05-22 00:31:52,089 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Model config for YOLOv11x: C:\Users\Ck\vehicle-detection\Vehicle-detection-and-tracking-classwise-using-YOLO11\data\yolo11x.pt
-2025-05-22 00:31:52,104 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - CUDA is available for YOLOv11x.
-2025-05-22 00:31:52,758 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - YOLOv11x successfully configured for cuda.
-2025-05-22 00:31:52,759 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Updating processed class filter.
-2025-05-22 00:31:52,759 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Active model filtering for classes: ['bicycle', 'car', 'motorcycle', 'bus', 'truck']
-2025-05-22 00:31:52,760 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Model 'YOLOv11x' loaded. Classes: 80. Configured to run on: cuda.
-2025-05-22 00:31:52,760 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - load_model finished. Load successful: True
-2025-05-22 00:31:52,760 - DEBUG - MainThread - log_debug - Hiding loading overlay and updating controls.
-2025-05-22 00:31:52,766 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: is_fast_processing FLAG is currently False
-2025-05-22 00:31:52,766 - DEBUG - MainThread - log_debug - File Upload Button state set to: (), Effective style: Primary.TButton
-2025-05-22 00:31:52,766 - DEBUG - MainThread - log_debug - Process Real-time Button state set to: ('disabled',), Effective style: Primary.TButton
-2025-05-22 00:31:52,766 - DEBUG - MainThread - log_debug - Fast Process Button state set to: ('disabled',), Effective style: Secondary.TButton
-2025-05-22 00:31:52,766 - DEBUG - MainThread - log_debug - Play/Pause Button (no video controls) state: ('disabled',), Style: Primary.TButton
-2025-05-22 00:31:52,766 - DEBUG - MainThread - log_debug - Stop Button (no video controls) state: ('disabled',), Style: Secondary.TButton
-2025-05-22 00:31:52,766 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.
-2025-05-22 00:31:52,774 - DEBUG - MainThread - log_debug - Cleared video_display as controls are hidden, not fast processing, and not showing a processed static image.
-2025-05-22 00:31:52,783 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls finished.
-2025-05-22 00:31:53,610 - DEBUG - MainThread - log_debug - handle_file_upload: 'Upload File' button pressed.
-2025-05-22 00:31:55,958 - DEBUG - MainThread - log_debug - handle_file_upload: File selected: C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4
-2025-05-22 00:31:55,958 - DEBUG - MainThread - log_debug - Showing loading overlay: Processing uploaded file...
-2025-05-22 00:31:56,018 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - Thread started for processing file: C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4
-2025-05-22 00:31:56,018 - DEBUG - MainThread - log_debug - File upload: Worker thread started for C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4.
-2025-05-22 00:31:56,018 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - File type determined in thread: video, mime: video/mp4
-2025-05-22 00:31:56,018 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - Attempting to cleanup temp file: None
-2025-05-22 00:31:56,018 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - Stopping all video processing and playback logic.
-2025-05-22 00:31:56,018 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - Attempting to cleanup temp file: None
-2025-05-22 00:31:56,018 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - All processing logic stopped and resources potentially released.
-2025-05-22 00:31:56,018 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - Video file: opening and reading first frame in thread.
-2025-05-22 00:31:58,194 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - Thread processing for C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4 completed. Success: True
-2025-05-22 00:31:58,205 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:31:58,205 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:31:58,205 - DEBUG - MainThread - log_debug - Hiding loading overlay and updating controls.
-2025-05-22 00:31:58,209 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: is_fast_processing FLAG is currently False
-2025-05-22 00:31:58,209 - DEBUG - MainThread - log_debug - File Upload Button state set to: ('focus',), Effective style: Primary.TButton
-2025-05-22 00:31:58,209 - DEBUG - MainThread - log_debug - Process Real-time Button state set to: (), Effective style: Primary.TButton
-2025-05-22 00:31:58,209 - DEBUG - MainThread - log_debug - Fast Process Button state set to: (), Effective style: Secondary.TButton
-2025-05-22 00:31:58,209 - DEBUG - MainThread - log_debug - Play/Pause Button state: (), Text: Play, Style: Primary.TButton
-2025-05-22 00:31:58,209 - DEBUG - MainThread - log_debug - Stop Button state: (), Style: Secondary.TButton
-2025-05-22 00:31:58,209 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.
-2025-05-22 00:31:58,253 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls finished.
-2025-05-22 00:31:59,154 - DEBUG - MainThread - log_debug - handle_model_selection_change: Model selection changed to 'RT-DETR-X'. Args: ('PY_VAR0', '', 'write')
-2025-05-22 00:31:59,154 - DEBUG - MainThread - log_debug - Selected model for loading: RT-DETR-X
-2025-05-22 00:31:59,154 - DEBUG - MainThread - log_debug - Stopping all video processing and playback logic.
-2025-05-22 00:31:59,154 - DEBUG - MainThread - log_debug - Releasing video capture object.
-2025-05-22 00:31:59,161 - DEBUG - MainThread - log_debug - Attempting to cleanup temp file: None
-2025-05-22 00:31:59,161 - DEBUG - MainThread - log_debug - All processing logic stopped and resources potentially released.
-2025-05-22 00:31:59,161 - DEBUG - MainThread - log_debug - Showing loading overlay: Loading model: RT-DETR-X...
-2025-05-22 00:31:59,206 - DEBUG - Thread-4 (load_model_task) - log_debug - Attempting to load model: RT-DETR-X
-2025-05-22 00:31:59,206 - DEBUG - Thread-4 (load_model_task) - log_debug - Model config for RT-DETR-X: rtdetr-x.pt
-2025-05-22 00:31:59,207 - DEBUG - Thread-4 (load_model_task) - log_debug - CUDA is available for RT-DETR-X.
-2025-05-22 00:31:59,599 - DEBUG - Thread-4 (load_model_task) - log_debug - RT-DETR-X successfully configured for cuda.
-2025-05-22 00:31:59,600 - DEBUG - Thread-4 (load_model_task) - log_debug - Updating processed class filter.
-2025-05-22 00:31:59,600 - DEBUG - Thread-4 (load_model_task) - log_debug - Active model filtering for classes: ['bicycle', 'car', 'motorcycle', 'bus', 'truck']
-2025-05-22 00:31:59,600 - DEBUG - Thread-4 (load_model_task) - log_debug - Model 'RT-DETR-X' loaded. Classes: 80. Configured to run on: cuda.
-2025-05-22 00:31:59,601 - DEBUG - Thread-4 (load_model_task) - log_debug - load_model finished. Load successful: True
-2025-05-22 00:31:59,602 - DEBUG - MainThread - log_debug - Hiding loading overlay and updating controls.
-2025-05-22 00:31:59,607 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: is_fast_processing FLAG is currently False
-2025-05-22 00:31:59,607 - DEBUG - MainThread - log_debug - File Upload Button state set to: (), Effective style: Primary.TButton
-2025-05-22 00:31:59,607 - DEBUG - MainThread - log_debug - Process Real-time Button state set to: (), Effective style: Primary.TButton
-2025-05-22 00:31:59,607 - DEBUG - MainThread - log_debug - Fast Process Button state set to: (), Effective style: Secondary.TButton
-2025-05-22 00:31:59,608 - DEBUG - MainThread - log_debug - Play/Pause Button state: (), Text: Play, Style: Primary.TButton
-2025-05-22 00:31:59,608 - DEBUG - MainThread - log_debug - Stop Button state: ('disabled',), Style: Secondary.TButton
-2025-05-22 00:31:59,608 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.
-2025-05-22 00:31:59,615 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls finished.
-2025-05-22 00:32:00,010 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,010 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.24986784140969162
-2025-05-22 00:32:00,016 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,016 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.24768722466960355
-2025-05-22 00:32:00,022 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,022 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.24550660792951542
-2025-05-22 00:32:00,023 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,023 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.24332599118942733
-2025-05-22 00:32:00,025 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,025 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.24114537444933923
-2025-05-22 00:32:00,027 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,027 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.2389647577092511
-2025-05-22 00:32:00,029 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,029 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.236784140969163
-2025-05-22 00:32:00,034 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,034 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.23460352422907488
-2025-05-22 00:32:00,035 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,035 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.23242290748898678
-2025-05-22 00:32:00,037 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,037 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.23024229074889868
-2025-05-22 00:32:00,039 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,039 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.22806167400881058
-2025-05-22 00:32:00,041 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,041 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.22588105726872248
-2025-05-22 00:32:00,043 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,043 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.22151982378854626
-2025-05-22 00:32:00,045 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,045 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.21933920704845816
-2025-05-22 00:32:00,048 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,048 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.21715859030837004
-2025-05-22 00:32:00,049 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,049 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.21279735682819384
-2025-05-22 00:32:00,051 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,052 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.21061674008810571
-2025-05-22 00:32:00,053 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,053 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.20625550660792952
-2025-05-22 00:32:00,055 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,055 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.20407488986784142
-2025-05-22 00:32:00,057 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,057 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1997136563876652
-2025-05-22 00:32:00,059 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,059 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.195352422907489
-2025-05-22 00:32:00,061 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,062 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.19099118942731277
-2025-05-22 00:32:00,063 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,063 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.18881057268722468
-2025-05-22 00:32:00,066 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,066 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.18444933920704848
-2025-05-22 00:32:00,067 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,067 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.18008810572687226
-2025-05-22 00:32:00,069 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,069 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.17572687224669603
-2025-05-22 00:32:00,071 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,072 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.17354625550660793
-2025-05-22 00:32:00,073 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,074 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.16700440528634364
-2025-05-22 00:32:00,075 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,075 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1626431718061674
-2025-05-22 00:32:00,077 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,077 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1561013215859031
-2025-05-22 00:32:00,080 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,080 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1495594713656388
-2025-05-22 00:32:00,081 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,081 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.14519823788546257
-2025-05-22 00:32:00,083 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,083 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.14301762114537445
-2025-05-22 00:32:00,085 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,085 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.13865638766519825
-2025-05-22 00:32:00,087 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,087 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.13429515418502203
-2025-05-22 00:32:00,089 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,089 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1299339207048458
-2025-05-22 00:32:00,091 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,091 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1277533039647577
-2025-05-22 00:32:00,093 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,093 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.12339207048458149
-2025-05-22 00:32:00,095 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,095 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.12121145374449338
-2025-05-22 00:32:00,098 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,098 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.11685022026431718
-2025-05-22 00:32:00,099 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,099 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.11466960352422907
-2025-05-22 00:32:00,101 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,102 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.11248898678414096
-2025-05-22 00:32:00,103 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,103 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.11030837004405285
-2025-05-22 00:32:00,105 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,105 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.10812775330396475
-2025-05-22 00:32:00,107 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,107 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.10594713656387665
-2025-05-22 00:32:00,111 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,112 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.10376651982378854
-2025-05-22 00:32:00,116 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,116 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.10158590308370043
-2025-05-22 00:32:00,121 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,122 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.09940528634361233
-2025-05-22 00:32:00,142 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,142 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.09722466960352423
-2025-05-22 00:32:00,172 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,172 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.09504405286343612
-2025-05-22 00:32:00,210 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,210 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.092863436123348
-2025-05-22 00:32:00,220 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,220 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.09068281938325991
-2025-05-22 00:32:00,226 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,226 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.08850220264317181
-2025-05-22 00:32:00,229 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,230 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.0863215859030837
-2025-05-22 00:32:00,235 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,236 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.08414096916299559
-2025-05-22 00:32:00,240 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,240 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.08196035242290747
-2025-05-22 00:32:00,245 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,246 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.07977973568281939
-2025-05-22 00:32:00,252 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,252 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.07759911894273128
-2025-05-22 00:32:00,263 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,264 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.07541850220264316
-2025-05-22 00:32:00,294 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
-2025-05-22 00:32:00,294 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.07323788546255505
-2025-05-22 00:32:00,932 - DEBUG - MainThread - log_debug - toggle_play_pause: 'Play/Pause' button pressed.
-2025-05-22 00:32:00,932 - DEBUG - MainThread - log_debug - Raw video uploaded. Play click implies starting real-time processing.
-2025-05-22 00:32:00,932 - DEBUG - MainThread - log_debug - on_process_button_click: 'Process Real-time' button pressed.
-2025-05-22 00:32:00,932 - DEBUG - MainThread - log_debug - Preparing video for real-time analysis using root.after() loop: C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4
-2025-05-22 00:32:00,932 - DEBUG - MainThread - log_debug - Showing loading overlay: Preparing real-time analysis...
-2025-05-22 00:32:00,981 - DEBUG - MainThread - log_debug - Stopping all video processing and playback logic.
-2025-05-22 00:32:00,981 - DEBUG - MainThread - log_debug - Attempting to cleanup temp file: None
-2025-05-22 00:32:00,981 - DEBUG - MainThread - log_debug - All processing logic stopped and resources potentially released.
-2025-05-22 00:32:00,989 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:00,989 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:00,990 - DEBUG - MainThread - log_debug - Hiding loading overlay and updating controls.
-2025-05-22 00:32:00,996 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: is_fast_processing FLAG is currently False
-2025-05-22 00:32:00,996 - DEBUG - MainThread - log_debug - File Upload Button state set to: (), Effective style: Primary.TButton
-2025-05-22 00:32:00,997 - DEBUG - MainThread - log_debug - Process Real-time Button state set to: (), Effective style: Primary.TButton
-2025-05-22 00:32:00,997 - DEBUG - MainThread - log_debug - Fast Process Button state set to: (), Effective style: Secondary.TButton
-2025-05-22 00:32:00,997 - DEBUG - MainThread - log_debug - Play/Pause Button state: ('active', 'focus', 'hover'), Text: Pause, Style: Primary.TButton
-2025-05-22 00:32:00,997 - DEBUG - MainThread - log_debug - Stop Button state: (), Style: Secondary.TButton
-2025-05-22 00:32:00,998 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.
-2025-05-22 00:32:01,003 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls finished.
-2025-05-22 00:32:01,003 - DEBUG - MainThread - log_debug - Real-time video playback (root.after loop) initiated.
-2025-05-22 00:32:01,800 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:01,800 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:01,803 - DEBUG - MainThread - log_debug - FPS below threshold (2.5). Switching to reduced resolution mode.
-2025-05-22 00:32:01,876 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:01,876 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:01,957 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:01,957 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:02,034 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:02,034 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:02,111 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:02,112 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:02,188 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:02,188 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:02,269 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:02,269 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:02,350 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:02,350 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:02,430 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:02,430 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:02,507 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:02,507 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:02,589 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:02,589 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:02,664 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:02,665 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:02,748 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:02,748 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:02,826 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:02,826 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:02,903 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:02,903 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:02,988 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:02,988 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:03,071 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:03,071 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:03,150 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:03,150 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:03,230 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:03,230 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:03,309 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:03,309 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:03,394 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:03,395 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:03,478 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:03,478 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:03,565 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:03,565 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:03,647 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:03,647 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:03,722 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:03,722 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:03,797 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:03,797 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:03,874 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:03,875 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:03,950 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:03,950 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:04,035 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:04,035 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:04,120 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:04,120 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:04,195 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:04,196 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:04,276 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:04,276 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:04,359 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:04,359 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:04,438 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:04,439 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:04,516 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:04,516 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:04,599 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:04,599 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:04,680 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:04,680 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:04,754 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:04,754 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:04,839 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:04,839 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:04,918 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:04,919 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:05,001 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:05,001 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:05,084 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:05,084 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:05,164 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:05,164 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:05,242 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:05,242 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:05,321 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:05,321 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:05,402 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:05,402 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:05,484 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:05,485 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:05,568 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:05,568 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:05,645 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:05,645 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:05,722 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:05,722 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:05,797 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:05,797 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:05,872 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:05,872 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:05,948 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:05,948 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:06,029 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:06,030 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:06,118 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:06,118 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:06,196 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:06,196 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:06,270 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:06,270 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:06,352 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:06,352 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:06,430 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:06,430 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:06,511 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:06,511 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:06,588 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:06,588 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:06,665 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:06,665 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:06,744 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:06,744 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:06,822 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:06,822 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:06,901 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:06,901 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:06,986 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:06,986 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:07,068 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:07,068 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:07,146 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:07,146 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:07,225 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:07,225 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:07,305 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:07,305 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:07,383 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:07,383 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:07,467 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:07,467 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:07,546 - DEBUG - MainThread - log_debug - toggle_play_pause: 'Play/Pause' button pressed.
-2025-05-22 00:32:07,546 - DEBUG - MainThread - log_debug - Video playback paused (root.after loop).
-2025-05-22 00:32:07,546 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
-2025-05-22 00:32:07,546 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
-2025-05-22 00:32:13,145 - DEBUG - MainThread - log_debug - on_close called. From exception: False
-2025-05-22 00:32:13,145 - DEBUG - MainThread - log_debug - Stopping all video processing and playback logic.
-2025-05-22 00:32:13,145 - DEBUG - MainThread - log_debug - Cancelled root.after playback loop with ID: after#358
-2025-05-22 00:32:13,145 - DEBUG - MainThread - log_debug - Releasing video capture object.
-2025-05-22 00:32:13,153 - DEBUG - MainThread - log_debug - Attempting to cleanup temp file: None
-2025-05-22 00:32:13,154 - DEBUG - MainThread - log_debug - All processing logic stopped and resources potentially released.
-2025-05-22 00:32:13,154 - DEBUG - MainThread - log_debug - Destroying root window.
-2025-05-22 00:32:13,194 - DEBUG - MainThread - log_debug - Application cleanup finished.
-2025-05-22 00:32:13,194 - DEBUG - MainThread - log_debug - Application exited main loop.
+2025-05-22 00:21:55,865 - DEBUG - MainThread - log_debug - run_app.py: main() executed. Debug mode from config: True
+2025-05-22 00:21:55,865 - DEBUG - MainThread - log_debug - Launching application...
+2025-05-22 00:21:55,966 - DEBUG - MainThread - log_debug - Placing UI components into layout...
+2025-05-22 00:21:55,966 - DEBUG - MainThread - log_debug - Setting up model selector...
+2025-05-22 00:21:55,967 - DEBUG - MainThread - log_debug - Event handlers initialized.
+2025-05-22 00:21:55,968 - DEBUG - MainThread - log_debug - Tkinter callbacks initialized.
+2025-05-22 00:21:56,001 - DEBUG - MainThread - log_debug - Calculated required window size: 1277x782
+2025-05-22 00:21:56,001 - DEBUG - MainThread - log_debug - Set root minsize to: 931x500
+2025-05-22 00:21:56,001 - DEBUG - MainThread - log_debug - --- Initializing Application --- Loading default model: YOLOv11x
+2025-05-22 00:21:56,001 - DEBUG - MainThread - log_debug - Showing loading overlay: Initializing with model: YOLOv11x...
+2025-05-22 00:21:56,078 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Attempting to load model: YOLOv11x
+2025-05-22 00:21:56,078 - DEBUG - MainThread - log_debug - Starting Tkinter main loop...
+2025-05-22 00:21:56,078 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Model config for YOLOv11x: C:\Users\Ck\vehicle-detection\Vehicle-detection-and-tracking-classwise-using-YOLO11\data\yolo11x.pt
+2025-05-22 00:21:56,096 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - CUDA is available for YOLOv11x.
+2025-05-22 00:21:56,740 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - YOLOv11x successfully configured for cuda.
+2025-05-22 00:21:56,741 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Updating processed class filter.
+2025-05-22 00:21:56,741 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Active model filtering for classes: ['bicycle', 'car', 'motorcycle', 'bus', 'truck']
+2025-05-22 00:21:56,741 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - Model 'YOLOv11x' loaded. Classes: 80. Configured to run on: cuda.
+2025-05-22 00:21:56,742 - DEBUG - Thread-1 (initial_model_load_task) - log_debug - load_model finished. Load successful: True
+2025-05-22 00:21:56,742 - DEBUG - MainThread - log_debug - Hiding loading overlay and updating controls.
+2025-05-22 00:21:56,746 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: is_fast_processing FLAG is currently False
+2025-05-22 00:21:56,746 - DEBUG - MainThread - log_debug - File Upload Button state set to: (), Effective style: Primary.TButton
+2025-05-22 00:21:56,746 - DEBUG - MainThread - log_debug - Process Real-time Button state set to: ('disabled',), Effective style: Primary.TButton
+2025-05-22 00:21:56,747 - DEBUG - MainThread - log_debug - Fast Process Button state set to: ('disabled',), Effective style: Secondary.TButton
+2025-05-22 00:21:56,747 - DEBUG - MainThread - log_debug - Play/Pause Button (no video controls) state: ('disabled',), Style: Primary.TButton
+2025-05-22 00:21:56,747 - DEBUG - MainThread - log_debug - Stop Button (no video controls) state: ('disabled',), Style: Secondary.TButton
+2025-05-22 00:21:56,747 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.
+2025-05-22 00:21:56,755 - DEBUG - MainThread - log_debug - Cleared video_display as controls are hidden, not fast processing, and not showing a processed static image.
+2025-05-22 00:21:56,761 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls finished.
+2025-05-22 00:21:57,474 - DEBUG - MainThread - log_debug - handle_file_upload: 'Upload File' button pressed.
+2025-05-22 00:22:00,255 - DEBUG - MainThread - log_debug - handle_file_upload: File selected: C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4
+2025-05-22 00:22:00,255 - DEBUG - MainThread - log_debug - Showing loading overlay: Processing uploaded file...
+2025-05-22 00:22:00,304 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - Thread started for processing file: C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4
+2025-05-22 00:22:00,304 - DEBUG - MainThread - log_debug - File upload: Worker thread started for C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4.
+2025-05-22 00:22:00,304 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - File type determined in thread: video, mime: video/mp4
+2025-05-22 00:22:00,304 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - Attempting to cleanup temp file: None
+2025-05-22 00:22:00,304 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - Stopping all video processing and playback logic.
+2025-05-22 00:22:00,304 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - Attempting to cleanup temp file: None
+2025-05-22 00:22:00,304 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - All processing logic stopped and resources potentially released.
+2025-05-22 00:22:00,304 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - Video file: opening and reading first frame in thread.
+2025-05-22 00:22:02,462 - DEBUG - Thread-2 (_process_uploaded_file_in_thread) - log_debug - Thread processing for C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4 completed. Success: True
+2025-05-22 00:22:02,473 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:02,473 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:02,473 - DEBUG - MainThread - log_debug - Hiding loading overlay and updating controls.
+2025-05-22 00:22:02,477 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: is_fast_processing FLAG is currently False
+2025-05-22 00:22:02,477 - DEBUG - MainThread - log_debug - File Upload Button state set to: ('focus',), Effective style: Primary.TButton
+2025-05-22 00:22:02,477 - DEBUG - MainThread - log_debug - Process Real-time Button state set to: (), Effective style: Primary.TButton
+2025-05-22 00:22:02,477 - DEBUG - MainThread - log_debug - Fast Process Button state set to: (), Effective style: Secondary.TButton
+2025-05-22 00:22:02,477 - DEBUG - MainThread - log_debug - Play/Pause Button state: (), Text: Play, Style: Primary.TButton
+2025-05-22 00:22:02,477 - DEBUG - MainThread - log_debug - Stop Button state: (), Style: Secondary.TButton
+2025-05-22 00:22:02,477 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.
+2025-05-22 00:22:02,522 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls finished.
+2025-05-22 00:22:03,926 - DEBUG - MainThread - log_debug - stop_video_stream_button_click: 'Stop' button pressed.
+2025-05-22 00:22:05,157 - DEBUG - MainThread - log_debug - Stopping all video processing and playback logic.
+2025-05-22 00:22:05,157 - DEBUG - MainThread - log_debug - Releasing video capture object.
+2025-05-22 00:22:05,164 - DEBUG - MainThread - log_debug - Attempting to cleanup temp file: None
+2025-05-22 00:22:05,164 - DEBUG - MainThread - log_debug - All processing logic stopped and resources potentially released.
+2025-05-22 00:22:05,169 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:05,170 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:05,170 - DEBUG - MainThread - log_debug - Hiding loading overlay and updating controls.
+2025-05-22 00:22:05,170 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: is_fast_processing FLAG is currently False
+2025-05-22 00:22:05,170 - DEBUG - MainThread - log_debug - File Upload Button state set to: (), Effective style: Primary.TButton
+2025-05-22 00:22:05,170 - DEBUG - MainThread - log_debug - Process Real-time Button state set to: ('disabled',), Effective style: Primary.TButton
+2025-05-22 00:22:05,170 - DEBUG - MainThread - log_debug - Fast Process Button state set to: ('disabled',), Effective style: Secondary.TButton
+2025-05-22 00:22:05,170 - DEBUG - MainThread - log_debug - Play/Pause Button (no video controls) state: ('disabled',), Style: Primary.TButton
+2025-05-22 00:22:05,170 - DEBUG - MainThread - log_debug - Stop Button (no video controls) state: ('disabled', 'focus'), Style: Secondary.TButton
+2025-05-22 00:22:05,170 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.
+2025-05-22 00:22:05,178 - DEBUG - MainThread - log_debug - Cleared video_display as controls are hidden, not fast processing, and not showing a processed static image.
+2025-05-22 00:22:05,308 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls finished.
+2025-05-22 00:22:07,666 - DEBUG - MainThread - log_debug - handle_file_upload: 'Upload File' button pressed.
+2025-05-22 00:22:09,927 - DEBUG - MainThread - log_debug - handle_file_upload: File selected: C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4
+2025-05-22 00:22:09,927 - DEBUG - MainThread - log_debug - Showing loading overlay: Processing uploaded file...
+2025-05-22 00:22:09,975 - DEBUG - Thread-4 (_process_uploaded_file_in_thread) - log_debug - Thread started for processing file: C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4
+2025-05-22 00:22:09,975 - DEBUG - MainThread - log_debug - File upload: Worker thread started for C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4.
+2025-05-22 00:22:09,975 - DEBUG - Thread-4 (_process_uploaded_file_in_thread) - log_debug - File type determined in thread: video, mime: video/mp4
+2025-05-22 00:22:09,976 - DEBUG - Thread-4 (_process_uploaded_file_in_thread) - log_debug - Attempting to cleanup temp file: None
+2025-05-22 00:22:09,976 - DEBUG - Thread-4 (_process_uploaded_file_in_thread) - log_debug - Stopping all video processing and playback logic.
+2025-05-22 00:22:09,976 - DEBUG - Thread-4 (_process_uploaded_file_in_thread) - log_debug - Attempting to cleanup temp file: None
+2025-05-22 00:22:09,976 - DEBUG - Thread-4 (_process_uploaded_file_in_thread) - log_debug - All processing logic stopped and resources potentially released.
+2025-05-22 00:22:09,976 - DEBUG - Thread-4 (_process_uploaded_file_in_thread) - log_debug - Video file: opening and reading first frame in thread.
+2025-05-22 00:22:10,273 - DEBUG - Thread-4 (_process_uploaded_file_in_thread) - log_debug - Thread processing for C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4 completed. Success: True
+2025-05-22 00:22:10,283 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:10,284 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:10,284 - DEBUG - MainThread - log_debug - Hiding loading overlay and updating controls.
+2025-05-22 00:22:10,288 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: is_fast_processing FLAG is currently False
+2025-05-22 00:22:10,288 - DEBUG - MainThread - log_debug - File Upload Button state set to: ('focus',), Effective style: Primary.TButton
+2025-05-22 00:22:10,288 - DEBUG - MainThread - log_debug - Process Real-time Button state set to: (), Effective style: Primary.TButton
+2025-05-22 00:22:10,288 - DEBUG - MainThread - log_debug - Fast Process Button state set to: (), Effective style: Secondary.TButton
+2025-05-22 00:22:10,288 - DEBUG - MainThread - log_debug - Play/Pause Button state: (), Text: Play, Style: Primary.TButton
+2025-05-22 00:22:10,288 - DEBUG - MainThread - log_debug - Stop Button state: (), Style: Secondary.TButton
+2025-05-22 00:22:10,288 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.
+2025-05-22 00:22:10,330 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls finished.
+2025-05-22 00:22:11,046 - DEBUG - MainThread - log_debug - handle_model_selection_change: Model selection changed to 'RT-DETR-X'. Args: ('PY_VAR0', '', 'write')
+2025-05-22 00:22:11,046 - DEBUG - MainThread - log_debug - Selected model for loading: RT-DETR-X
+2025-05-22 00:22:11,046 - DEBUG - MainThread - log_debug - Stopping all video processing and playback logic.
+2025-05-22 00:22:11,046 - DEBUG - MainThread - log_debug - Releasing video capture object.
+2025-05-22 00:22:11,053 - DEBUG - MainThread - log_debug - Attempting to cleanup temp file: None
+2025-05-22 00:22:11,053 - DEBUG - MainThread - log_debug - All processing logic stopped and resources potentially released.
+2025-05-22 00:22:11,053 - DEBUG - MainThread - log_debug - Showing loading overlay: Loading model: RT-DETR-X...
+2025-05-22 00:22:11,099 - DEBUG - Thread-5 (load_model_task) - log_debug - Attempting to load model: RT-DETR-X
+2025-05-22 00:22:11,099 - DEBUG - Thread-5 (load_model_task) - log_debug - Model config for RT-DETR-X: rtdetr-x.pt
+2025-05-22 00:22:11,100 - DEBUG - Thread-5 (load_model_task) - log_debug - CUDA is available for RT-DETR-X.
+2025-05-22 00:22:11,447 - DEBUG - Thread-5 (load_model_task) - log_debug - RT-DETR-X successfully configured for cuda.
+2025-05-22 00:22:11,448 - DEBUG - Thread-5 (load_model_task) - log_debug - Updating processed class filter.
+2025-05-22 00:22:11,448 - DEBUG - Thread-5 (load_model_task) - log_debug - Active model filtering for classes: ['bicycle', 'car', 'motorcycle', 'bus', 'truck']
+2025-05-22 00:22:11,448 - DEBUG - Thread-5 (load_model_task) - log_debug - Model 'RT-DETR-X' loaded. Classes: 80. Configured to run on: cuda.
+2025-05-22 00:22:11,448 - DEBUG - Thread-5 (load_model_task) - log_debug - load_model finished. Load successful: True
+2025-05-22 00:22:11,449 - DEBUG - MainThread - log_debug - Hiding loading overlay and updating controls.
+2025-05-22 00:22:11,454 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: is_fast_processing FLAG is currently False
+2025-05-22 00:22:11,454 - DEBUG - MainThread - log_debug - File Upload Button state set to: (), Effective style: Primary.TButton
+2025-05-22 00:22:11,454 - DEBUG - MainThread - log_debug - Process Real-time Button state set to: (), Effective style: Primary.TButton
+2025-05-22 00:22:11,455 - DEBUG - MainThread - log_debug - Fast Process Button state set to: (), Effective style: Secondary.TButton
+2025-05-22 00:22:11,455 - DEBUG - MainThread - log_debug - Play/Pause Button state: (), Text: Play, Style: Primary.TButton
+2025-05-22 00:22:11,455 - DEBUG - MainThread - log_debug - Stop Button state: ('disabled',), Style: Secondary.TButton
+2025-05-22 00:22:11,455 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.
+2025-05-22 00:22:11,462 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls finished.
+2025-05-22 00:22:22,128 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,128 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.23242290748898678
+2025-05-22 00:22:22,129 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,129 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.23024229074889868
+2025-05-22 00:22:22,133 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,133 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.22806167400881058
+2025-05-22 00:22:22,135 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,135 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.22588105726872248
+2025-05-22 00:22:22,138 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,138 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.2237004405286344
+2025-05-22 00:22:22,139 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,139 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.22151982378854626
+2025-05-22 00:22:22,141 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,141 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.21933920704845816
+2025-05-22 00:22:22,143 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,143 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.21715859030837004
+2025-05-22 00:22:22,145 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,145 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.21497797356828194
+2025-05-22 00:22:22,147 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,147 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.21279735682819384
+2025-05-22 00:22:22,149 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,149 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.21061674008810571
+2025-05-22 00:22:22,151 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,151 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.20843612334801764
+2025-05-22 00:22:22,153 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,153 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.20625550660792952
+2025-05-22 00:22:22,156 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,156 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.20407488986784142
+2025-05-22 00:22:22,157 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,157 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.20189427312775332
+2025-05-22 00:22:22,159 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,159 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1975330396475771
+2025-05-22 00:22:22,161 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,161 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.195352422907489
+2025-05-22 00:22:22,163 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,163 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.19317180616740087
+2025-05-22 00:22:22,165 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,165 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.19099118942731277
+2025-05-22 00:22:22,167 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,167 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.18662995594713658
+2025-05-22 00:22:22,169 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,170 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.18444933920704848
+2025-05-22 00:22:22,171 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,171 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.18226872246696035
+2025-05-22 00:22:22,173 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,173 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.18008810572687226
+2025-05-22 00:22:22,175 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,175 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.17572687224669603
+2025-05-22 00:22:22,177 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,177 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.17354625550660793
+2025-05-22 00:22:22,179 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,179 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.17136563876651983
+2025-05-22 00:22:22,182 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,182 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.16918502202643174
+2025-05-22 00:22:22,183 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,183 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1648237885462555
+2025-05-22 00:22:22,185 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,185 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1626431718061674
+2025-05-22 00:22:22,187 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,188 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1604625550660793
+2025-05-22 00:22:22,189 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,189 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1582819383259912
+2025-05-22 00:22:22,191 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,191 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1561013215859031
+2025-05-22 00:22:22,193 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,193 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.15392070484581497
+2025-05-22 00:22:22,195 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,195 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1517400881057269
+2025-05-22 00:22:22,197 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,197 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1495594713656388
+2025-05-22 00:22:22,199 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,199 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.14737885462555067
+2025-05-22 00:22:22,202 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,202 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.14519823788546257
+2025-05-22 00:22:22,205 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,205 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.14301762114537445
+2025-05-22 00:22:22,207 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,207 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.14083700440528635
+2025-05-22 00:22:22,209 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,209 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.13865638766519825
+2025-05-22 00:22:22,213 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,213 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.13647577092511012
+2025-05-22 00:22:22,215 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,215 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.13429515418502203
+2025-05-22 00:22:22,217 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,217 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.13211453744493393
+2025-05-22 00:22:22,221 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,221 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1299339207048458
+2025-05-22 00:22:22,225 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,225 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1277533039647577
+2025-05-22 00:22:22,227 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,228 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.1255726872246696
+2025-05-22 00:22:22,231 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,231 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.12339207048458149
+2025-05-22 00:22:22,233 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,233 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.12121145374449338
+2025-05-22 00:22:22,237 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,237 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.11903083700440528
+2025-05-22 00:22:22,241 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,241 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.11685022026431718
+2025-05-22 00:22:22,245 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,245 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.11466960352422907
+2025-05-22 00:22:22,249 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,250 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.11248898678414096
+2025-05-22 00:22:22,253 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,254 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.11030837004405285
+2025-05-22 00:22:22,258 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,258 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.10812775330396475
+2025-05-22 00:22:22,261 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,261 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.10594713656387665
+2025-05-22 00:22:22,265 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,266 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.10376651982378854
+2025-05-22 00:22:22,271 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,272 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.10158590308370043
+2025-05-22 00:22:22,275 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,275 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.09940528634361233
+2025-05-22 00:22:22,281 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,282 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.09722466960352423
+2025-05-22 00:22:22,304 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,304 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.09504405286343612
+2025-05-22 00:22:22,323 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,324 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.092863436123348
+2025-05-22 00:22:22,356 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,356 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.09068281938325991
+2025-05-22 00:22:22,430 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,430 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.08850220264317181
+2025-05-22 00:22:22,437 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,437 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.0863215859030837
+2025-05-22 00:22:22,447 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,448 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.08414096916299559
+2025-05-22 00:22:22,461 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,462 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.08196035242290747
+2025-05-22 00:22:22,476 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,476 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.07977973568281939
+2025-05-22 00:22:22,487 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,487 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.07759911894273128
+2025-05-22 00:22:22,498 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,498 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.07541850220264316
+2025-05-22 00:22:22,503 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,503 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.07323788546255505
+2025-05-22 00:22:22,507 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,507 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.07105726872246695
+2025-05-22 00:22:22,513 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,513 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.06887665198237886
+2025-05-22 00:22:22,517 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,517 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.06887665198237886
+2025-05-22 00:22:22,530 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,530 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.06669603524229074
+2025-05-22 00:22:22,561 - DEBUG - MainThread - log_debug - handle_conf_change: Confidence slider changed. Args: ('PY_VAR2', '', 'write')
+2025-05-22 00:22:22,562 - DEBUG - MainThread - log_debug - Confidence threshold changed to 0.06451541850220265
+2025-05-22 00:22:23,522 - DEBUG - MainThread - log_debug - on_process_button_click: 'Process Real-time' button pressed.
+2025-05-22 00:22:23,522 - DEBUG - MainThread - log_debug - Preparing video for real-time analysis using root.after() loop: C:/Users/Ck/Downloads/491531417_9821682051211652_3204850113587906199_n.mp4
+2025-05-22 00:22:23,522 - DEBUG - MainThread - log_debug - Showing loading overlay: Preparing real-time analysis...
+2025-05-22 00:22:23,570 - DEBUG - MainThread - log_debug - Stopping all video processing and playback logic.
+2025-05-22 00:22:23,570 - DEBUG - MainThread - log_debug - Attempting to cleanup temp file: None
+2025-05-22 00:22:23,570 - DEBUG - MainThread - log_debug - All processing logic stopped and resources potentially released.
+2025-05-22 00:22:23,578 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:23,578 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:23,578 - DEBUG - MainThread - log_debug - Hiding loading overlay and updating controls.
+2025-05-22 00:22:23,585 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: is_fast_processing FLAG is currently False
+2025-05-22 00:22:23,585 - DEBUG - MainThread - log_debug - File Upload Button state set to: (), Effective style: Primary.TButton
+2025-05-22 00:22:23,585 - DEBUG - MainThread - log_debug - Process Real-time Button state set to: ('active', 'focus', 'hover'), Effective style: Primary.TButton
+2025-05-22 00:22:23,585 - DEBUG - MainThread - log_debug - Fast Process Button state set to: (), Effective style: Secondary.TButton
+2025-05-22 00:22:23,585 - DEBUG - MainThread - log_debug - Play/Pause Button state: (), Text: Pause, Style: Primary.TButton
+2025-05-22 00:22:23,585 - DEBUG - MainThread - log_debug - Stop Button state: (), Style: Secondary.TButton
+2025-05-22 00:22:23,586 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.
+2025-05-22 00:22:23,591 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls finished.
+2025-05-22 00:22:23,591 - DEBUG - MainThread - log_debug - Real-time video playback (root.after loop) initiated.
+2025-05-22 00:22:24,285 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:24,285 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:24,371 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:24,371 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:24,459 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:24,459 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:24,546 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:24,546 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:24,637 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:24,638 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:24,730 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:24,730 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:24,818 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:24,818 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:24,906 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:24,906 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:24,996 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:24,996 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:25,084 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:25,085 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:25,172 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:25,172 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:25,261 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:25,261 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:25,349 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:25,350 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:25,437 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:25,438 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:25,526 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:25,526 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:25,615 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:25,615 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:25,704 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:25,705 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:25,797 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:25,797 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:25,890 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:25,890 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:25,980 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:25,980 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:26,072 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:26,072 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:26,160 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:26,160 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:26,244 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:26,244 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:26,333 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:26,333 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:26,418 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:26,418 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:26,505 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:26,505 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:26,592 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:26,592 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:26,679 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:26,679 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:26,767 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:26,767 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:26,857 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:26,857 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:26,945 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:26,945 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:27,031 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:27,031 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:27,119 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:27,119 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:27,203 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:27,203 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:27,286 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:27,286 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:27,375 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:27,375 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:27,463 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:27,463 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:27,550 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:27,550 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:27,641 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:27,641 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:27,728 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:27,728 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:27,810 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:27,810 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:27,898 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:27,898 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:27,986 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:27,986 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:28,077 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:28,077 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:28,171 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:28,171 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:28,256 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:28,256 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:28,345 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:28,345 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:28,430 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:28,430 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:28,516 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:28,517 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:28,604 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:28,604 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:28,694 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:28,694 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:28,783 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:28,783 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:28,875 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:28,875 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:28,962 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:28,962 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:29,054 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:29,054 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:29,149 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:29,149 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:29,236 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:29,236 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:29,320 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:29,320 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:29,406 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:29,406 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:29,491 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:29,491 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:29,586 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:29,586 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:29,694 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:29,694 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:29,787 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:29,787 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:29,870 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:29,870 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:29,954 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:29,954 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:30,038 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:30,038 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:30,129 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:30,129 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:30,211 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:30,212 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:30,296 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:30,296 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:30,380 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:30,380 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:30,467 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:30,467 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:30,557 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:30,557 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:30,645 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:30,646 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:30,738 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:30,738 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:30,822 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:30,822 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:30,906 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:30,906 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:30,991 - DEBUG - MainThread - log_debug - toggle_play_pause: 'Play/Pause' button pressed.
+2025-05-22 00:22:30,991 - DEBUG - MainThread - log_debug - Video playback paused (root.after loop).
+2025-05-22 00:22:30,991 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:30,991 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:32,662 - DEBUG - MainThread - log_debug - stop_video_stream_button_click: 'Stop' button pressed.
+2025-05-22 00:22:33,708 - DEBUG - MainThread - log_debug - Stopping all video processing and playback logic.
+2025-05-22 00:22:33,708 - DEBUG - MainThread - log_debug - Cancelled root.after playback loop with ID: after#327
+2025-05-22 00:22:33,708 - DEBUG - MainThread - log_debug - Releasing video capture object.
+2025-05-22 00:22:33,716 - DEBUG - MainThread - log_debug - Attempting to cleanup temp file: None
+2025-05-22 00:22:33,716 - DEBUG - MainThread - log_debug - All processing logic stopped and resources potentially released.
+2025-05-22 00:22:33,723 - DEBUG - MainThread - log_debug - handle_slider_value_change (trace on var) triggered. Programmatic update flag: True. Args: ('PY_VAR4', '', 'write')
+2025-05-22 00:22:33,723 - DEBUG - MainThread - log_debug - Slider change is programmatic. No seek action from trace.
+2025-05-22 00:22:33,723 - DEBUG - MainThread - log_debug - Hiding loading overlay and updating controls.
+2025-05-22 00:22:33,723 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: is_fast_processing FLAG is currently False
+2025-05-22 00:22:33,723 - DEBUG - MainThread - log_debug - File Upload Button state set to: (), Effective style: Primary.TButton
+2025-05-22 00:22:33,723 - DEBUG - MainThread - log_debug - Process Real-time Button state set to: ('disabled',), Effective style: Primary.TButton
+2025-05-22 00:22:33,723 - DEBUG - MainThread - log_debug - Fast Process Button state set to: ('disabled',), Effective style: Secondary.TButton
+2025-05-22 00:22:33,723 - DEBUG - MainThread - log_debug - Play/Pause Button (no video controls) state: ('disabled',), Style: Primary.TButton
+2025-05-22 00:22:33,723 - DEBUG - MainThread - log_debug - Stop Button (no video controls) state: ('disabled', 'focus'), Style: Secondary.TButton
+2025-05-22 00:22:33,723 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls: Fast processing IS NOT active, ensuring progress frame is forgotten.
+2025-05-22 00:22:33,732 - DEBUG - MainThread - log_debug - Cleared video_display as controls are hidden, not fast processing, and not showing a processed static image.
+2025-05-22 00:22:33,867 - DEBUG - MainThread - log_debug - hide_loading_and_update_controls finished.
+2025-05-22 00:22:38,761 - DEBUG - MainThread - log_debug - KeyboardInterrupt caught in main_app. Cleaning up...
+2025-05-22 00:22:38,761 - DEBUG - MainThread - log_debug - on_close called. From exception: True
+2025-05-22 00:22:38,761 - DEBUG - MainThread - log_debug - Stopping all video processing and playback logic.
+2025-05-22 00:22:38,762 - DEBUG - MainThread - log_debug - Attempting to cleanup temp file: None
+2025-05-22 00:22:38,762 - DEBUG - MainThread - log_debug - All processing logic stopped and resources potentially released.
+2025-05-22 00:22:38,762 - DEBUG - MainThread - log_debug - Destroying root window.
+2025-05-22 00:22:38,785 - DEBUG - MainThread - log_debug - Application cleanup finished.
+2025-05-22 00:22:38,785 - DEBUG - MainThread - log_debug - Application exited main loop.

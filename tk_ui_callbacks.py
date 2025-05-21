@@ -63,7 +63,6 @@ def _stop_all_processing_logic():
 
     _cleanup_processed_video_temp_file()
     app_globals.stop_video_processing_flag.clear() 
-    app_globals.is_using_reduced_resolution = False
     log_debug("All processing logic stopped and resources potentially released.")
 
 

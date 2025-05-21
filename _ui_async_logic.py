@@ -25,10 +25,9 @@ def _video_playback_loop(process_frames_real_time: bool):
     Main video playback loop, driven by root.after().
     Handles both real-time processed playback and pre-processed video playback.
     """
-    global _last_frame_display_time_ns
+    global _last_frame_display_time_ns 
     root = refs.get_root()
     ui_comps = refs.ui_components
-    frame_original_size = None  # Store original frame dimensions
 
     if app_globals.stop_video_processing_flag.is_set() or not app_globals.is_playing_via_after_loop:
         log_debug("Stopping video playback loop (flag set or mode changed).")
@@ -76,17 +75,7 @@ def _video_playback_loop(process_frames_real_time: bool):
     time_delta_fps = current_time_fps_calc - app_globals.real_time_fps_last_update_time
     if time_delta_fps >= 0.5:
         if time_delta_fps > 0 :
-            current_fps = app_globals.real_time_fps_frames_processed / time_delta_fps
-            app_globals.real_time_fps_display_value = current_fps
-
-            # Check FPS and toggle reduced resolution mode if needed
-            if process_frames_real_time and app_globals.active_model_object_global:
-                if current_fps < 15 and not app_globals.is_using_reduced_resolution:
-                    app_globals.is_using_reduced_resolution = True
-                    log_debug(f"FPS below threshold ({current_fps:.1f}). Switching to reduced resolution mode.")
-                elif current_fps >= 20 and app_globals.is_using_reduced_resolution:
-                    app_globals.is_using_reduced_resolution = False
-                    log_debug(f"FPS recovered ({current_fps:.1f}). Returning to full resolution mode.")
+            app_globals.real_time_fps_display_value = app_globals.real_time_fps_frames_processed / time_delta_fps
         else:
             app_globals.real_time_fps_display_value = 999
         app_globals.real_time_fps_frames_processed = 0
@@ -94,33 +83,13 @@ def _video_playback_loop(process_frames_real_time: bool):
 
     if process_frames_real_time and app_globals.active_model_object_global and output_frame is not None:
         try:
-            # Store original frame size for scaling back later
-            frame_original_size = output_frame.shape[1::-1]  # (width, height)
-
-            processing_frame = output_frame
-
-            # If in reduced resolution mode, scale down the frame for processing
-            if app_globals.is_using_reduced_resolution:
-                new_width = int(frame_original_size[0] * 0.5)
-                new_height = int(frame_original_size[1] * 0.5)
-                processing_frame = cv2.resize(output_frame, (new_width, new_height),
-                                            interpolation=cv2.INTER_AREA)
-
-            # Process the frame (either original or reduced resolution)
-            processed_frame, _ = process_frame_yolo(
-                processing_frame, app_globals.active_model_object_global, app_globals.active_class_list_global,
+            output_frame, _ = process_frame_yolo(
+                output_frame, app_globals.active_model_object_global, app_globals.active_class_list_global,
                 persist_tracking=True, is_video_mode=True,
                 active_filter_list=app_globals.active_processed_class_filter_global,
                 current_conf_thresh=app_globals.conf_threshold_global,
                 current_iou_thresh=app_globals.iou_threshold_global
             )
-
-            # If we used reduced resolution, scale back up to original size
-            if app_globals.is_using_reduced_resolution and frame_original_size is not None:
-                output_frame = cv2.resize(processed_frame, frame_original_size,
-                                          interpolation=cv2.INTER_LINEAR)
-            else:
-                output_frame = processed_frame
         except Exception as e_process:
             log_debug(f"Error during real-time frame processing in playback loop: {e_process}", exc_info=True)
 

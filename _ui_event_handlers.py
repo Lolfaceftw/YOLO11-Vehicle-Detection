@@ -140,7 +140,6 @@ def on_process_button_click():
             app_globals.real_time_fps_frames_processed = 0
             app_globals.real_time_fps_last_update_time = time.perf_counter()
             app_globals.real_time_fps_display_value = 0.0
-            app_globals.is_using_reduced_resolution = False
             async_logic._last_frame_display_time_ns = 0 
 
             if app_globals.after_id_playback_loop: 
@@ -203,7 +202,6 @@ def toggle_play_pause():
             
             app_globals.real_time_fps_last_update_time = time.perf_counter()
             app_globals.real_time_fps_frames_processed = 0
-            app_globals.is_using_reduced_resolution = False
             log_debug(f"Resumed. FPS timers reset. Last display time re-anchored for frame {current_frame_at_resume}.")
         else: # Pausing
             app_globals.video_paused_flag.set()
@@ -264,7 +262,6 @@ def toggle_play_pause():
             app_globals.real_time_fps_frames_processed = 0
             app_globals.real_time_fps_last_update_time = time.perf_counter()
             app_globals.real_time_fps_display_value = 0.0
-            app_globals.is_using_reduced_resolution = False
             async_logic._last_frame_display_time_ns = 0 
 
             if app_globals.after_id_playback_loop: 
@@ -322,7 +319,6 @@ def stop_video_stream_button_click():
          ui_comps["time_label"].config(text=async_logic.format_time_display(0, app_globals.current_video_meta.get('duration_seconds',0)))
     
     app_globals.real_time_fps_display_value = 0.0
-    app_globals.is_using_reduced_resolution = False
     if ui_comps.get("fps_label"): ui_comps["fps_label"].config(text="FPS: --")
     if ui_comps.get("current_frame_label"): ui_comps["current_frame_label"].config(text="Frame: 0 / {}".format(app_globals.current_video_meta.get('total_frames', '--')))
 

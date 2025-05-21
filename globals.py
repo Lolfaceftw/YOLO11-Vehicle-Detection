@@ -14,7 +14,6 @@ after_id_playback_loop = None
 real_time_fps_frames_processed = 0
 real_time_fps_last_update_time = 0.0
 real_time_fps_display_value = 0.0
-is_using_reduced_resolution = False
 
 # --- Global State for Fast (Batch) Video Processing ---\n",
 fast_video_processing_thread = None
