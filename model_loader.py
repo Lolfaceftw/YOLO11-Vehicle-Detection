@@ -6,14 +6,26 @@ from .logger_setup import log_debug
 
 AVAILABLE_MODELS = {
     "YOLOv11x": {"loader": YOLO, "path": config.YOLO_MODEL_PATH, "instance": None, "class_list": {}},
+    "YOLO11s-small_trained": {"loader": YOLO, "path": config.YOLO11S_SMALL_TRAINED_PATH, "instance": None, "class_list": {}},
     "RT-DETR-X": {"loader": RTDETR, "path": config.RTDETR_MODEL_PATH, "instance": None, "class_list": {}}
 }
 
 def _update_processed_class_filter():
     log_debug("Updating processed class filter.")
     valid_classes = []
-    if config.YOLO_CLASS_FILTER_INDICES and app_globals.active_class_list_global:
-        for c_idx in config.YOLO_CLASS_FILTER_INDICES:
+    
+    # Determine which filter indices to use based on the active model
+    filter_indices = []
+    if app_globals.active_model_key == "YOLO11s-small_trained":
+        # Use indices for all custom classes in the trained model (0-4)
+        filter_indices = list(range(5))  # 0, 1, 2, 3, 4
+        log_debug(f"Using custom class filter indices for {app_globals.active_model_key}: {filter_indices}")
+    else:
+        # Use default filter indices for all other models
+        filter_indices = config.YOLO_CLASS_FILTER_INDICES
+    
+    if filter_indices and app_globals.active_class_list_global:
+        for c_idx in filter_indices:
             if isinstance(app_globals.active_class_list_global, dict):
                 if c_idx in app_globals.active_class_list_global:
                     valid_classes.append(c_idx)
@@ -105,6 +117,14 @@ def load_model(model_key_to_load):
 
         app_globals.active_model_object_global = loaded_model
         app_globals.active_class_list_global = loaded_model.names if hasattr(loaded_model, 'names') else {}
+        
+        # Update category names for YOLO11s-small_trained model
+        if model_key_to_load == "YOLO11s-small_trained":
+            # Custom category names for the trained model
+            app_globals.active_class_list_global = {0: 'bus', 1: 'car', 2: 'jeep', 3: 'tricycle', 4: 'van'}
+            log_debug(f"Using custom category names for {model_key_to_load}")
+            print(f"Using custom category names for {model_key_to_load}: {app_globals.active_class_list_global}")
+            
         app_globals.active_model_key = model_key_to_load 
         
         model_config['instance'] = app_globals.active_model_object_global
