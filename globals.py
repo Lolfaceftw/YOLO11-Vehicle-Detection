@@ -24,7 +24,16 @@ fast_processing_active_flag = threading.Event()
 # --- Global State for Slider Debouncing ---\n",
 slider_debounce_timer = None
 slider_target_frame_value = 0 
-is_programmatic_slider_update = False 
+is_programmatic_slider_update = False
+
+# --- Global State for Seek Optimization ---
+seek_operation_lock = threading.Lock()
+current_seek_thread = None
+seek_cancel_flag = threading.Event()
+last_seek_request_time = 0.0
+seek_debounce_timer = None
+pending_seek_frame = None
+is_seek_in_progress = False
 
 # --- Global State for Model Management and Thresholds ---\n",
 iou_threshold_global = 0.45 
@@ -40,5 +49,10 @@ device_to_use = 'cpu'
 # --- UI State and File Info ---\n",
 current_video_meta = {'fps': 0.0, 'total_frames': 0, 'duration_seconds': 0.0, 'current_frame': 0} 
 uploaded_file_info = {} 
+current_uploaded_file_path_global = None
 
-current_processed_image_for_display = None 
+current_processed_image_for_display = None
+current_unprocessed_image_for_display = None
+fps_global = 0.0
+total_frames_global = 0
+current_frame_number_global = 0

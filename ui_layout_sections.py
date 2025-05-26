@@ -97,7 +97,7 @@ def create_video_player_section(parent):
 
     progress_frame = ttk.Frame(container, style="TFrame")
     progress_var = tk.IntVar(value=0)
-    progress_slider = ttk.Scale(progress_frame, from_=0, to=100, orient="horizontal", variable=progress_var, state="disabled")
+    progress_slider = ttk.Scale(progress_frame, from_=0, to=1000, orient="horizontal", variable=progress_var, state="disabled")
     time_label = ttk.Label(progress_frame, text="00:00 / 00:00", style="TLabel", width=12, anchor="e")
     progress_slider.pack(side="left", expand=True, fill="x", padx=(0, config.SPACING_MEDIUM))
     time_label.pack(side="left")

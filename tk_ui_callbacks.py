@@ -9,9 +9,10 @@ import tkinter as tk
 from . import _ui_shared_refs as refs
 from . import _ui_event_handlers as event_handlers
 from . import _ui_loading_manager as loading_manager 
+from . import _ui_seek_optimizer as seek_optimizer
 from . import globals as app_globals
 from .logger_setup import log_debug
-from .video_handler import _cleanup_processed_video_temp_file 
+from .video_handler import _cleanup_processed_video_temp_file
 
 def _stop_all_processing_logic():
     """Stop all video processing, playback, and fast processing logic. Also releases video capture."""
@@ -61,6 +62,9 @@ def _stop_all_processing_logic():
         except tk.TclError: pass 
         app_globals.slider_debounce_timer = None
 
+    # Cancel all seek operations
+    seek_optimizer.cancel_all_seeks()
+
     _cleanup_processed_video_temp_file()
     app_globals.stop_video_processing_flag.clear() 
     log_debug("All processing logic stopped and resources potentially released.")
@@ -91,6 +95,7 @@ def init_callbacks(root_win, components_dict):
     components_dict["progress_var"].trace_add("write", event_handlers.handle_slider_value_change)
     progress_slider_widget = components_dict.get("progress_slider")
     if progress_slider_widget:
+        progress_slider_widget.bind("<Button-1>", event_handlers.handle_slider_click_press)
         progress_slider_widget.bind("<ButtonRelease-1>", event_handlers.handle_slider_click_release)
     
     # Removed stdout/stderr redirection as console output box is removed
