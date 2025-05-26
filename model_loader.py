@@ -7,8 +7,25 @@ from .logger_setup import log_debug
 AVAILABLE_MODELS = {
     "YOLOv11x": {"loader": YOLO, "path": config.YOLO_MODEL_PATH, "instance": None, "class_list": {}},
     "YOLO11s-small_trained": {"loader": YOLO, "path": config.YOLO11S_SMALL_TRAINED_PATH, "instance": None, "class_list": {}},
-    "RT-DETR-X": {"loader": RTDETR, "path": config.RTDETR_MODEL_PATH, "instance": None, "class_list": {}}
+    "RT-DETR-X": {"loader": RTDETR, "path": config.RTDETR_MODEL_PATH, "instance": None, "class_list": {}},
+    "Select Custom Model": {"loader": YOLO, "path": "", "instance": None, "class_list": {}}
 }
+
+def set_custom_model_path(model_path):
+    """Set the path for the custom model."""
+    if "Select Custom Model" in AVAILABLE_MODELS:
+        AVAILABLE_MODELS["Select Custom Model"]["path"] = model_path
+        log_debug(f"Custom model path set to: {model_path}")
+
+def get_custom_model_path():
+    """Get the current custom model path."""
+    if "Select Custom Model" in AVAILABLE_MODELS:
+        return AVAILABLE_MODELS["Select Custom Model"]["path"]
+    return ""
+
+def is_custom_model_selected():
+    """Check if a custom model is currently selected."""
+    return app_globals.active_model_key == "Select Custom Model"
 
 def _update_processed_class_filter():
     log_debug("Updating processed class filter.")
@@ -17,9 +34,14 @@ def _update_processed_class_filter():
     # Determine which filter indices to use based on the active model
     filter_indices = []
     if app_globals.active_model_key == "YOLO11s-small_trained":
-        # Use indices for all custom classes in the trained model (0-4)
-        filter_indices = list(range(5))  # 0, 1, 2, 3, 4
+        # Use indices for all custom classes in the trained model (0-7)
+        filter_indices = list(range(8))  # 0, 1, 2, 3, 4, 5, 6, 7
         log_debug(f"Using custom class filter indices for {app_globals.active_model_key}: {filter_indices}")
+    elif app_globals.active_model_key == "Select Custom Model":
+        # For custom models, use all available classes by default
+        if app_globals.active_class_list_global:
+            filter_indices = list(app_globals.active_class_list_global.keys()) if isinstance(app_globals.active_class_list_global, dict) else list(range(len(app_globals.active_class_list_global)))
+        log_debug(f"Using all class indices for custom model: {filter_indices}")
     else:
         # Use default filter indices for all other models
         filter_indices = config.YOLO_CLASS_FILTER_INDICES
@@ -69,6 +91,17 @@ def load_model(model_key_to_load):
         model_config = AVAILABLE_MODELS[model_key_to_load]
         log_debug(f"Model config for {model_key_to_load}: {model_config['path']}")
         print(f"Attempting to load model: {model_key_to_load} ({model_config['path']})") # To standard console
+
+        # Validate custom model path
+        if model_key_to_load == "Select Custom Model":
+            if not model_config['path']:
+                log_debug("Error: Custom model selected but no .pt file path has been set.")
+                print("Error: Custom model selected but no .pt file path has been set. Please browse and select a .pt file.") # To standard console
+                return False
+            if not os.path.exists(model_config['path']):
+                log_debug(f"Error: Custom model file not found at {model_config['path']}.")
+                print(f"Error: Custom model file not found at {model_config['path']}. Please select a valid .pt file.") # To standard console
+                return False
 
         if not os.path.exists(model_config['path']) and model_key_to_load == "YOLOv11x": 
              log_debug(f"Error: Model file not found at {model_config['path']}. Please ensure it exists.")
@@ -121,9 +154,18 @@ def load_model(model_key_to_load):
         # Update category names for YOLO11s-small_trained model
         if model_key_to_load == "YOLO11s-small_trained":
             # Custom category names for the trained model
-            app_globals.active_class_list_global = {0: 'bus', 1: 'car', 2: 'jeep', 3: 'tricycle', 4: 'van'}
+            app_globals.active_class_list_global = {0: 'bicycle', 1: 'bus', 2: 'car', 3: 'jeep', 4: 'motorcycle', 5: 'tricycle', 6: 'truck', 7: 'van'}
             log_debug(f"Using custom category names for {model_key_to_load}")
             print(f"Using custom category names for {model_key_to_load}: {app_globals.active_class_list_global}")
+        elif model_key_to_load == "Select Custom Model":
+            # For custom models, automatically detect class names from the .names attribute
+            if hasattr(loaded_model, 'names') and loaded_model.names:
+                app_globals.active_class_list_global = loaded_model.names
+                log_debug(f"Automatically detected class names for custom model: {app_globals.active_class_list_global}")
+                print(f"Custom model loaded with {len(app_globals.active_class_list_global)} classes: {list(app_globals.active_class_list_global.values())}")
+            else:
+                log_debug("Warning: Custom model does not have class names (.names attribute)")
+                print("Warning: Custom model does not have class names available")
             
         app_globals.active_model_key = model_key_to_load 
         

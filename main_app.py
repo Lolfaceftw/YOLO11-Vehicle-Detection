@@ -41,15 +41,42 @@ def setup_model_selector(ui_components_dict):
             widget.destroy()
     ui_components_dict["model_buttons"] = []
 
+    def on_model_radio_change():
+        """Handle radio button selection to show/hide custom model frame."""
+        selected_model = model_var.get()
+        custom_model_frame = ui_components_dict.get("custom_model_frame")
+        custom_model_button = ui_components_dict.get("custom_model_button")
+        
+        if custom_model_frame:
+            if selected_model == "Select Custom Model":
+                custom_model_frame.pack(fill="x", pady=config.SPACING_SMALL, padx=config.SPACING_MEDIUM)
+                if custom_model_button:
+                    custom_model_button.state(['!disabled'])
+            else:
+                custom_model_frame.pack_forget()
+                if custom_model_button:
+                    custom_model_button.state(['disabled'])
+
     for i, model_key in enumerate(model_keys):
+        # Make custom model option more descriptive
+        display_text = model_key
+        if model_key == "Select Custom Model":
+            display_text = "Custom Model (.pt file)"
+        
         rb = ttk.Radiobutton(
             model_selector_frame,
-            text=model_key,
+            text=display_text,
             variable=model_var,
-            value=model_key
+            value=model_key,
+            command=on_model_radio_change
         )
         rb.pack(anchor="w", padx=config.SPACING_MEDIUM, pady=config.SPACING_SMALL)
         ui_components_dict["model_buttons"].append(rb)
+
+    # Initially hide the custom model frame
+    custom_model_frame = ui_components_dict.get("custom_model_frame")
+    if custom_model_frame:
+        custom_model_frame.pack_forget()
 
     if default_model in model_keys:
         model_var.set(default_model)

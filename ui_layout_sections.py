@@ -28,7 +28,24 @@ def create_process_buttons_section(parent):
 def create_model_selector_section(parent):
     frame = ttk.LabelFrame(parent, text="Model Selection", style="TLabelframe")
     model_var = tk.StringVar()
-    return {"model_selector_frame": frame, "model_var": model_var, "model_buttons": []} # Radiobuttons added later
+    
+    # Custom model selection components
+    custom_model_frame = ttk.Frame(frame, style="Card.TFrame", padding=config.SPACING_SMALL)
+    custom_model_button = ttk.Button(custom_model_frame, text="Browse .pt File", style="Secondary.TButton")
+    custom_model_button.state(['disabled'])  # Initially disabled
+    custom_model_label = ttk.Label(custom_model_frame, text="No custom model selected", style="Card.TLabel", width=35)
+    
+    custom_model_button.pack(side="left", padx=(0, config.SPACING_MEDIUM))
+    custom_model_label.pack(side="left", fill="x", expand=True)
+    
+    return {
+        "model_selector_frame": frame, 
+        "model_var": model_var, 
+        "model_buttons": [],  # Radiobuttons added later
+        "custom_model_frame": custom_model_frame,
+        "custom_model_button": custom_model_button,
+        "custom_model_label": custom_model_label
+    }
 
 def create_threshold_sliders_section(parent):
     frame = ttk.LabelFrame(parent, text="Detection Thresholds", style="TLabelframe")

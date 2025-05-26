@@ -77,6 +77,7 @@ def init_callbacks(root_win, components_dict):
     event_handlers.init_event_handlers(_stop_all_processing_logic) 
 
     components_dict["file_upload_button"].config(command=event_handlers.handle_file_upload)
+    components_dict["custom_model_button"].config(command=event_handlers.handle_custom_model_upload)
     components_dict["process_button"].config(command=event_handlers.on_process_button_click)
     components_dict["fast_process_button"].config(command=event_handlers.on_fast_process_button_click)
     

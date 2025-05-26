@@ -14,6 +14,8 @@ from . import _ui_async_logic as async_logic
 from . import globals as app_globals
 from . import config
 from .logger_setup import log_debug
+from .model_loader import set_custom_model_path
+from .frame_processor import process_frame_yolo
 
 _stop_all_processing_logic_ref = None
 
@@ -60,6 +62,46 @@ def handle_file_upload():
     log_debug(f"File upload: Worker thread started for {file_path}.")
 
 
+def handle_custom_model_upload():
+    """Handle custom model file selection."""
+    log_debug("handle_custom_model_upload: 'Browse .pt File' button pressed.")
+    root = refs.get_root()
+    ui_comps = refs.ui_components
+    if not ui_comps or root is None or not root.winfo_exists():
+        log_debug("handle_custom_model_upload: UI components or root window not available.")
+        return
+    
+    file_path = filedialog.askopenfilename(
+        title="Select Custom YOLO Model (.pt file)",
+        filetypes=[
+            ("PyTorch Model files", "*.pt"),
+            ("All files", "*.*")
+        ]
+    )
+    
+    if not file_path:
+        log_debug("handle_custom_model_upload: No model file selected.")
+        return
+
+    file_name = os.path.basename(file_path)
+    log_debug(f"handle_custom_model_upload: Model file selected: {file_path}")
+    
+    # Update the custom model path in the model loader
+    set_custom_model_path(file_path)
+    
+    # Update the UI label
+    if ui_comps.get("custom_model_label"):
+        display_name = file_name if len(file_name) < 35 else file_name[:32]+"..."
+        ui_comps["custom_model_label"].config(text=display_name)
+    
+    # If "Select Custom Model" is currently selected, reload the model
+    if ui_comps.get("model_var") and ui_comps["model_var"].get() == "Select Custom Model":
+        log_debug("Custom model selected and 'Select Custom Model' is active. Reloading model...")
+        async_logic.run_model_load_in_thread("Select Custom Model", _stop_all_processing_logic_ref)
+    
+    log_debug(f"Custom model file set: {file_path}")
+
+
 def handle_model_selection_change(*args):
     """Handle model selection change."""
     selected_model_from_event = refs.ui_components["model_var"].get() 
@@ -76,6 +118,15 @@ def handle_model_selection_change(*args):
     if not selected_model:
         log_debug("No model selected after change event.")
         return
+    
+    # Validate custom model path if custom model is selected
+    if selected_model == "Select Custom Model":
+        from .model_loader import get_custom_model_path
+        custom_path = get_custom_model_path()
+        if not custom_path or not os.path.exists(custom_path):
+            log_debug("Custom model selected but no valid .pt file has been chosen.")
+            messagebox.showwarning("Custom Model", "Please select a valid .pt model file using the 'Browse .pt File' button.")
+            return
     
     if selected_model == app_globals.active_model_key and app_globals.active_model_object_global is not None:
         log_debug(f"Model {selected_model} is already loaded and active. No action taken.")
