@@ -48,10 +48,25 @@ def _stop_all_processing_logic():
         app_globals.fast_video_processing_thread.join(timeout=1.0) 
         if app_globals.fast_video_processing_thread.is_alive():
             log_debug("Fast processing thread did not join in time.")
+        else:
+            log_debug("Fast processing thread successfully joined.")
         app_globals.fast_video_processing_thread = None
-    app_globals.stop_fast_processing_flag.clear() 
-    app_globals.fast_processing_active_flag.clear() 
+        # Clear flags after thread management
+        app_globals.stop_fast_processing_flag.clear()
+        app_globals.fast_processing_active_flag.clear()
+    else:
+        # This case handles if the thread was never started, or already finished/joined.
+        # Ensure flags are definitely clear.
+        log_debug("Fast processing thread not alive or already handled. Ensuring flags are cleared.")
+        app_globals.stop_fast_processing_flag.clear()
+        app_globals.fast_processing_active_flag.clear()
     
+    # All playback loops (root.after_cancel) and legacy video_threads (video_thread.join)
+    # have been handled by this point. The video_capture_global will be released in the next block.
+    # It's now appropriate to clear the main video processing stop flag.
+    log_debug("Clearing main stop_video_processing_flag as dependent operations are complete.")
+    app_globals.stop_video_processing_flag.clear()
+
     with app_globals.video_access_lock:
         if app_globals.video_capture_global and app_globals.video_capture_global.isOpened():
             log_debug("Releasing video capture object.")
@@ -68,7 +83,6 @@ def _stop_all_processing_logic():
     seek_optimizer.cancel_all_seeks()
 
     _cleanup_processed_video_temp_file()
-    app_globals.stop_video_processing_flag.clear() 
     log_debug("All processing logic stopped and resources potentially released.")
 
 

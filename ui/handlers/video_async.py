@@ -21,6 +21,12 @@ def _video_playback_loop():
     root = refs.get_root()
     ui_comps = refs.ui_components
     
+    # Primary check: If playback is not supposed to be active, exit immediately.
+    if not app_globals.is_playing_via_after_loop:
+        log_debug("Video playback loop: is_playing_via_after_loop is False. Terminating loop.")
+        app_globals.after_id_playback_loop = None # Ensure no dangling ID
+        return
+
     if not ui_comps or root is None or not root.winfo_exists():
         log_debug("Video playback loop: UI components or root window not available. Stopping loop.")
         app_globals.is_playing_via_after_loop = False
@@ -34,8 +40,11 @@ def _video_playback_loop():
         return
     
     if app_globals.video_paused_flag.is_set():
-        if root.winfo_exists():
+        if root.winfo_exists() and app_globals.is_playing_via_after_loop: # Continue polling if paused but meant to be playing
             app_globals.after_id_playback_loop = root.after(50, _video_playback_loop)
+        else:
+            # If not supposed to be playing, ensure no reschedule
+            app_globals.after_id_playback_loop = None
         return
     
     with app_globals.video_access_lock:
@@ -95,7 +104,12 @@ def _video_playback_loop():
     if root.winfo_exists():
         fps = app_globals.current_video_meta.get('fps', 30.0)
         delay_ms = max(1, int(1000 / fps)) if fps > 0 else 33
-        app_globals.after_id_playback_loop = root.after(delay_ms, _video_playback_loop)
+        # Only reschedule if still intended to be playing
+        if app_globals.is_playing_via_after_loop:
+            app_globals.after_id_playback_loop = root.after(delay_ms, _video_playback_loop)
+        else:
+            log_debug("Video playback loop: Playback no longer active at rescheduling point. Not rescheduling.")
+            app_globals.after_id_playback_loop = None
 
 
 def _perform_seek_action_in_thread(target_frame_number, is_real_time_mode=False):
@@ -127,20 +141,26 @@ def run_fast_video_processing_in_thread(uploaded_video_path, stop_all_processing
     def fast_process_task():
         """Fast processing task that runs in a separate thread."""
         log_debug("Fast processing task started.")
+        root = refs.get_root() # Get root early for UI updates
         
         try:
             app_globals.fast_processing_active_flag.set()
             app_globals.stop_fast_processing_flag.clear()
+
+            # Immediately switch to the fast processing progress UI
+            if root and root.winfo_exists():
+                log_debug("Scheduling show_fast_processing_progress_ui from fast_process_task.")
+                root.after(0, loading_manager.show_fast_processing_progress_ui)
+            else:
+                log_debug("fast_process_task: Root window not available for initial UI update.")
             
+            # Give UI a moment to update before heavy processing starts
+            # This helps ensure the "Starting..." overlay is hidden and progress UI appears quickly.
+            time.sleep(0.1)
+
             success = fast_video_processing_thread_func(
-                uploaded_video_path, 
-                app_globals.active_model_object_global, 
-                app_globals.active_class_list_global,
-                app_globals.active_processed_class_filter_global,
-                app_globals.conf_threshold_global,
-                app_globals.iou_threshold_global,
-                app_globals.stop_fast_processing_flag,
-                app_globals.fast_processing_active_flag
+                uploaded_video_path,
+                progress_callback=loading_manager.update_fast_progress
             )
             
             log_debug(f"Fast processing completed. Success: {success}")

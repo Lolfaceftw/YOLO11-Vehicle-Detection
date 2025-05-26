@@ -29,6 +29,10 @@ def run_model_load_in_thread(selected_model_key, stop_all_processing_logic_ref):
         ui_comps = refs.ui_components
         
         try:
+            # Set active_model_key BEFORE attempting to load the model object.
+            # This ensures the UI knows which model is intended, even if loading fails.
+            app_globals.active_model_key = selected_model_key
+            
             model_load_success = load_model(selected_model_key)
             
             # Determine if a video needs re-initialization regardless of model load success

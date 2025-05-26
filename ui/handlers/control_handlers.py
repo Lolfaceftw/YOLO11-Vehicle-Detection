@@ -72,9 +72,11 @@ def on_process_button_click():
             app_globals.current_frame_number_global = 0
         
         # Update UI buttons
-        ui_comps["play_pause_button"].config(text="Pause")
+        ui_comps["play_pause_button"].config(text="Pause", state="normal")
+        ui_comps["stop_button"].state(['!disabled'])
         ui_comps["process_button"].state(['disabled'])
         ui_comps["fast_process_button"].state(['disabled'])
+        log_debug("Play/Pause and Stop buttons configured for active real-time processing.")
         
         # Start video playback loop
         app_globals.is_playing_via_after_loop = True
@@ -127,10 +129,35 @@ def toggle_play_pause():
     if current_text == "Play":
         log_debug("Starting video playback.")
         
-        if not app_globals.video_capture_global or not app_globals.video_capture_global.isOpened():
-            log_debug("Play: Video capture not available.")
-            messagebox.showerror("Video Error", "No video loaded or video capture failed.")
-            return
+        if app_globals.video_capture_global is None:
+            log_debug(f"Play: video_capture_global is None. Checking current_uploaded_file_path_global: {app_globals.current_uploaded_file_path_global}")
+            if app_globals.current_uploaded_file_path_global:
+                log_debug(f"Play: Attempting to re-initialize video capture for {app_globals.current_uploaded_file_path_global}.")
+                try:
+                    app_globals.video_capture_global = cv2.VideoCapture(app_globals.current_uploaded_file_path_global)
+                    if not app_globals.video_capture_global.isOpened():
+                        log_debug(f"Play: CRITICAL - Failed to re-initialize video capture for {app_globals.current_uploaded_file_path_global} after stop. Capture object did not open.")
+                        app_globals.video_capture_global = None # Ensure it's None if failed
+                        messagebox.showerror("Video Error", "Could not re-open video file for playback after stopping.")
+                        return # Critical failure, cannot proceed with play
+                    else:
+                        log_debug(f"Play: Successfully re-initialized video capture for {app_globals.current_uploaded_file_path_global}.")
+                        # Reset frame position to current if available, or 0. Important after stop.
+                        target_frame = app_globals.current_frame_number_global # This should be 0 after stop
+                        app_globals.video_capture_global.set(cv2.CAP_PROP_POS_FRAMES, target_frame)
+                        log_debug(f"Play: Set video position to frame {target_frame} after re-initialization.")
+                except Exception as e_reinit:
+                    log_debug(f"Play: CRITICAL - Exception during video re-initialization for {app_globals.current_uploaded_file_path_global}: {e_reinit}", exc_info=True)
+                    app_globals.video_capture_global = None
+                    messagebox.showerror("Video Error", f"Error re-opening video: {e_reinit}")
+                    return # Critical failure
+            else:
+                log_debug("Play: Video capture not available and no video path stored. Cannot start playback.")
+                # Potentially show a message or ensure UI reflects no video is playable
+                if ui_comps and ui_comps.get("play_pause_button"):
+                    ui_comps["play_pause_button"].config(text="Play")
+                    ui_comps["play_pause_button"].state(['disabled'])
+                return 
         
         app_globals.video_paused_flag.clear()
         app_globals.stop_video_processing_flag.clear()

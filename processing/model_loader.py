@@ -93,38 +93,75 @@ def load_model(model_key_to_load):
 
         model_config = AVAILABLE_MODELS[model_key_to_load]
         log_debug(f"Model config for {model_key_to_load}: {model_config['path']}")
-        print(f"Attempting to load model: {model_key_to_load} ({model_config['path']})") # To standard console
+        # print(f"Attempting to load model: {model_key_to_load} ({model_config['path']})") # To standard console
+
+        model_path_from_config = model_config['path']
+        model_identifier_for_loader = model_path_from_config # Default to the path in config
 
         # Validate custom model path
         if model_key_to_load == "Select Custom Model":
-            if not model_config['path']:
+            if not model_path_from_config:
                 log_debug("Error: Custom model selected but no .pt file path has been set.")
                 print("Error: Custom model selected but no .pt file path has been set. Please browse and select a .pt file.") # To standard console
                 return False
-            if not os.path.exists(model_config['path']):
-                log_debug(f"Error: Custom model file not found at {model_config['path']}.")
-                print(f"Error: Custom model file not found at {model_config['path']}. Please select a valid .pt file.") # To standard console
+            if not os.path.exists(model_path_from_config):
+                log_debug(f"Error: Custom model file not found at {model_path_from_config}.")
+                print(f"Error: Custom model file not found at {model_path_from_config}. Please select a valid .pt file.") # To standard console
                 return False
+        
+        # For pre-defined models, if not found at specified path, try to load by name (allowing Ultralytics to download)
+        # Except for YOLO11s-small_trained which is explicitly local.
+        elif model_key_to_load != "YOLO11s-small_trained" and not os.path.exists(model_path_from_config):
+            # Extract the base filename or use a known hub identifier if different
+            base_filename = os.path.basename(model_path_from_config) 
+            # For RT-DETR-X, Ultralytics uses 'rtdetr-x.pt' for hub download.
+            # For YOLO models, it's typically like 'yolov8x.pt'. We assume yolo11x.pt is custom or a specific file.
+            # If yolo11x.pt is not standard, this won't download it unless Ultralytics recognizes the name.
+            if model_key_to_load == "RT-DETR-X":
+                 model_identifier_for_loader = 'rtdetr-x.pt' # Standard name for auto-download
+                 log_debug(f"Model file not found at {model_path_from_config}. Attempting to load/download '{model_identifier_for_loader}' via Ultralytics.")
+                 print(f"Model file {base_filename} not found locally. Attempting to download/load from Ultralytics hub as '{model_identifier_for_loader}'...")
+            elif model_key_to_load == "YOLOv11x": # Assuming yolo11x.pt is a specific file name you expect
+                 # If yolo11x.pt is not a standard Ultralytics model name that it can auto-download,
+                 # then just using base_filename will likely only work if it's in a dir Ultralytics checks.
+                 # For this case, if not at model_config['path'], it means it's an error unless yolo11x.pt is a hub model name.
+                 # Sticking to previous logic for yolo11x.pt: if not at path, it is an error.
+                 # However, the user wants a download if not found.
+                 # The most robust way for a non-standard model is a direct download link + custom code, which is out of scope for this auto-fix.
+                 # For now, we let it try to load by its base filename. If Ultralytics recognizes 'yolo11x.pt', it might work.
+                 model_identifier_for_loader = base_filename 
+                 log_debug(f"Model file {model_path_from_config} not found. Attempting to load/download '{model_identifier_for_loader}' via Ultralytics. This may fail if not a recognized name.")
+                 print(f"Model file {base_filename} not found locally. Attempting to download/load from Ultralytics hub as '{model_identifier_for_loader}'...")
+            # Else, for other potential future pre-defined models, we'd use base_filename by default.
+            else:
+                 model_identifier_for_loader = base_filename
+                 log_debug(f"Model file not found at {model_path_from_config}. Attempting to load/download '{model_identifier_for_loader}' via Ultralytics.")
+                 print(f"Model file {base_filename} not found locally. Attempting to download/load from Ultralytics hub as '{model_identifier_for_loader}'...")
 
-        if not os.path.exists(model_config['path']) and model_key_to_load == "YOLOv11x": 
-             log_debug(f"Error: Model file not found at {model_config['path']}. Please ensure it exists.")
-             print(f"Error: Model file not found at {model_config['path']}. Please ensure it exists.") # To standard console
-             return False
+        elif model_key_to_load == "YOLO11s-small_trained" and not os.path.exists(model_path_from_config):
+            log_debug(f"Error: Trained model file {model_path_from_config} not found. This model cannot be auto-downloaded.")
+            print(f"Error: Trained model file {model_path_from_config} not found. Please ensure it exists.")
+            return False
+
+        # Log final model identifier
+        log_debug(f"Final model identifier for Ultralytics loader: '{model_identifier_for_loader}' for key '{model_key_to_load}'")
+        print(f"Loading model: {model_key_to_load} using identifier: '{model_identifier_for_loader}'")
 
         current_attempt_device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        log_debug(f"{'CUDA is available' if current_attempt_device == 'cuda' else 'CUDA not available. Using CPU'} for {model_key_to_load}.")
-        print(f"{'CUDA is available' if current_attempt_device == 'cuda' else 'CUDA not available. Using CPU'} for {model_key_to_load}.") # To standard console
+        log_debug(f"{{'CUDA is available' if current_attempt_device == 'cuda' else 'CUDA not available. Using CPU'}} for {model_key_to_load}.")
+        # print(f"{{'CUDA is available' if current_attempt_device == 'cuda' else 'CUDA not available. Using CPU'}} for {model_key_to_load}.") # To standard console
         
         model_loader_func = model_config['loader']
-        model_path_to_load = model_config['path']
-        if model_key_to_load == "RT-DETR-X" and not os.path.isabs(model_config['path']) and not os.path.exists(model_config['path']):
-            log_debug(f"Using Ultralytics default loading for {model_key_to_load} with name '{model_config['path']}'.")
-        elif not os.path.exists(model_config['path']):
-            if model_key_to_load != "RT-DETR-X": 
-                 print(f"Error: Model file not found at {model_config['path']}. Please ensure it exists.") # To standard console
-                 return False
         
-        loaded_model = model_loader_func(model_path_to_load)
+        # This was the old check that caused issues, now handled above with model_identifier_for_loader
+        # if model_key_to_load == "RT-DETR-X" and not os.path.isabs(model_config['path']) and not os.path.exists(model_config['path']):
+        #     log_debug(f"Using Ultralytics default loading for {model_key_to_load} with name '{model_config['path']}'.")
+        # elif not os.path.exists(model_config['path']):
+        #     if model_key_to_load != "RT-DETR-X": 
+        #          print(f"Error: Model file not found at {model_config['path']}. Please ensure it exists.") # To standard console
+        #          return False
+        
+        loaded_model = model_loader_func(model_identifier_for_loader) # Use the determined identifier
         
         try:
             loaded_model.to(current_attempt_device) 
