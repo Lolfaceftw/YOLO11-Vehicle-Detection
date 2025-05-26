@@ -19,6 +19,8 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
+from app.utils.logger_setup import log_debug # Ensure log_debug is imported if not already for the new line
+log_debug("app.run_app module initialized.")
 
 def main():
     parser = argparse.ArgumentParser(description="Vehicle Detection and Tracking Application.")
@@ -39,13 +41,14 @@ def main():
         print(f"Debug mode not enabled via flag. Defaulting to config.IS_DEBUG_MODE = {config.IS_DEBUG_MODE}")
 
     # --- Step 2: Now that config.IS_DEBUG_MODE is set, setup logging ---
-    from app.logger_setup import setup_logging, log_debug
+    from app.utils.logger_setup import setup_logging, log_debug # Corrected import
     
     print(f"run_app.py: Re-initializing logger with IS_DEBUG_MODE = {config.IS_DEBUG_MODE}")
     setup_logging() 
+    log_debug("run_app.py: Application starting...") # Restored log
 
     # --- Step 3: Proceed with other application imports and launch ---
-    from app.main_app import launch_app
+    from app.core.main_app import launch_app # Corrected import
     
     log_debug(f"run_app.py: main() executed. Debug mode from config: {config.IS_DEBUG_MODE}")
     print(f"Starting YOLO Object Detection application... Debug active: {config.IS_DEBUG_MODE}")
