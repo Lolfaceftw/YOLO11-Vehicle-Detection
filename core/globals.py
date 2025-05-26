@@ -25,6 +25,7 @@ fast_processing_active_flag = threading.Event()
 slider_debounce_timer = None
 slider_target_frame_value = 0 
 is_programmatic_slider_update = False
+is_slider_being_dragged = False
 
 # --- Global State for Seek Optimization ---
 seek_operation_lock = threading.Lock()

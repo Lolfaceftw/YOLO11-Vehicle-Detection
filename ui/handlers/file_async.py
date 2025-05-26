@@ -237,3 +237,70 @@ def run_image_processing_in_thread(file_path):
     
     threading.Thread(target=process_image_task, daemon=True).start()
     log_debug("Image processing thread started.")
+
+
+def reinitialize_video_capture(file_path):
+    """Re-initialize video capture after a model load or other operations that might release it."""
+    log_debug(f"Re-initializing video capture for: {file_path}")
+    success = False
+    root = refs.get_root()
+    ui_comps = refs.ui_components
+
+    try:
+        with app_globals.video_access_lock:
+            if app_globals.video_capture_global:
+                app_globals.video_capture_global.release()
+            
+            app_globals.video_capture_global = cv2.VideoCapture(file_path)
+            
+            if not app_globals.video_capture_global.isOpened():
+                raise ValueError(f"Could not re-open video file: {file_path}")
+            
+            fps = app_globals.video_capture_global.get(cv2.CAP_PROP_FPS)
+            total_frames = int(app_globals.video_capture_global.get(cv2.CAP_PROP_FRAME_COUNT))
+            width = int(app_globals.video_capture_global.get(cv2.CAP_PROP_FRAME_WIDTH))
+            height = int(app_globals.video_capture_global.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            
+            app_globals.current_video_meta.update({
+                'fps': fps,
+                'total_frames': total_frames,
+                'duration_seconds': total_frames / fps if fps > 0 else 0,
+                'current_frame': 0
+            })
+            app_globals.current_frame_number_global = 0 # Ensure consistency with metadata
+            
+            # Read first frame for display
+            ret, first_frame = app_globals.video_capture_global.read()
+            # IMPORTANT: Reset to frame 0 after reading the first frame, so playback/processing starts from beginning
+            app_globals.video_capture_global.set(cv2.CAP_PROP_POS_FRAMES, 0) 
+
+            if ret and first_frame is not None:
+                display_frame = first_frame.copy()
+                if app_globals.active_model_object_global: # Model is now loaded
+                    log_debug(f"Re-initializing video: Processing first frame with model {app_globals.active_model_key}")
+                    processed_first_frame, _ = process_frame_yolo(
+                        first_frame, app_globals.active_model_object_global, app_globals.active_class_list_global,
+                        is_video_mode=True, active_filter_list=app_globals.active_processed_class_filter_global,
+                        current_conf_thresh=app_globals.conf_threshold_global, current_iou_thresh=app_globals.iou_threshold_global
+                    )
+                    display_frame = processed_first_frame
+                
+                # Schedule display_frame update on main thread.
+                # hide_loading_and_update_controls will handle other UI elements based on updated app_globals.current_video_meta
+                if root and root.winfo_exists() and ui_comps and ui_comps.get("video_display"):
+                    def update_disp_frame(d_frame):
+                        if ui_comps.get("video_display"):
+                             ui_comps["video_display"].update_frame(d_frame)
+                    root.after(0, lambda d_f=display_frame: update_disp_frame(d_f))
+            success = True
+            log_debug(f"Video capture re-initialized for {file_path}. FPS: {fps}, Total Frames: {total_frames}")
+
+    except Exception as e:
+        log_debug(f"Error re-initializing video capture for {file_path}: {e}", exc_info=True)
+        with app_globals.video_access_lock: # Ensure cleanup on error
+            if app_globals.video_capture_global:
+                app_globals.video_capture_global.release()
+            app_globals.video_capture_global = None
+        app_globals.current_video_meta.clear() # Clear metadata on failure
+    
+    return success

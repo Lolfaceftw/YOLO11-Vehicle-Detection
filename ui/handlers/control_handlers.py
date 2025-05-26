@@ -205,28 +205,34 @@ def handle_slider_value_change(*args):
     if not ui_comps or not ui_comps.get("progress_var"):
         return
     
-    # Skip if this is a programmatic update to prevent feedback loops
     if app_globals.is_programmatic_slider_update:
         return
+
+    target_frame = ui_comps["progress_var"].get()
+    total_frames = app_globals.current_video_meta.get('total_frames', 0)
+    if total_frames <= 0:
+        return
+    target_frame = max(0, min(target_frame, total_frames - 1))
+
+    # Update UI labels immediately if dragging
+    if app_globals.is_slider_being_dragged:
+        fps = app_globals.current_video_meta.get('fps', 30.0)
+        current_time_sec = target_frame / fps if fps > 0 else 0
+        total_time_sec = app_globals.current_video_meta.get('duration_seconds', 0)
+        if ui_comps.get("time_label"):
+            ui_comps["time_label"].config(text=format_time_display(current_time_sec, total_time_sec))
+        if ui_comps.get("current_frame_label"):
+            ui_comps["current_frame_label"].config(text=f"Frame: {target_frame} / {total_frames}")
+        return # Don't seek while dragging, only on release
     
+    # Original logic for non-drag scenarios (e.g., arrow keys, or if not playing)
     if app_globals.is_playing_via_after_loop:
         return
     
     if not app_globals.video_capture_global or not app_globals.video_capture_global.isOpened():
         return
     
-    total_frames = app_globals.current_video_meta.get('total_frames', 0)
-    if total_frames <= 0:
-        return
-    
-    # Get target frame directly from slider (slider now uses frame numbers)
-    target_frame = ui_comps["progress_var"].get()
-    target_frame = max(0, min(target_frame, total_frames - 1))
-    
-    # Determine if real-time processing is active
     is_real_time = ui_comps.get("play_pause_button") and ui_comps["play_pause_button"].cget("text") == "Pause"
-    
-    # Use optimized seek system with debouncing
     seek_optimizer.request_seek(target_frame, is_real_time_mode=is_real_time, force_immediate=False)
 
 
@@ -238,6 +244,8 @@ def _execute_slider_seek():
 
 def handle_slider_click_press(event):
     """Handle slider click press event to calculate exact position from click coordinates."""
+    seek_optimizer.cancel_all_seeks() # Cancel any ongoing seeks immediately
+    app_globals.is_slider_being_dragged = True # Set drag flag
     ui_comps = refs.ui_components
     
     if not ui_comps or not ui_comps.get("progress_var") or not ui_comps.get("progress_slider"):
@@ -285,6 +293,7 @@ def handle_slider_click_press(event):
 
 def handle_slider_click_release(event):
     """Handle slider click release event with optimized seeking."""
+    app_globals.is_slider_being_dragged = False # Clear drag flag
     log_debug("handle_slider_click_release: Slider clicked/released.")
     
     ui_comps = refs.ui_components

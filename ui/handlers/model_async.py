@@ -11,6 +11,7 @@ from app.core import globals as app_globals
 from app.utils.logger_setup import log_debug
 from app.processing.model_loader import load_model
 from app.processing.frame_processor import process_frame_yolo
+from . import file_async
 
 log_debug("ui.handlers.model_async module initialized.")
 
@@ -22,16 +23,27 @@ def run_model_load_in_thread(selected_model_key, stop_all_processing_logic_ref):
     def load_model_task():
         """Model loading task that runs in a separate thread."""
         log_debug(f"Model loading task started for {selected_model_key}")
+        model_load_success = False # Initialize
+        video_file_to_reinitialize = None # Initialize
+        root = refs.get_root() # Get root and ui_comps once
+        ui_comps = refs.ui_components
         
         try:
-            success = load_model(selected_model_key)
+            model_load_success = load_model(selected_model_key)
             
-            root = refs.get_root()
-            ui_comps = refs.ui_components
+            # Determine if a video needs re-initialization regardless of model load success
+            if app_globals.uploaded_file_info and app_globals.uploaded_file_info.get('file_type') == 'video':
+                video_file_to_reinitialize = app_globals.uploaded_file_info.get('path')
+            elif app_globals.current_uploaded_file_path_global and app_globals.current_uploaded_file_path_global.lower().endswith(('.mp4', '.avi', '.mov', '.mkv')):
+                video_file_to_reinitialize = app_globals.current_uploaded_file_path_global
+
+            if video_file_to_reinitialize:
+                log_debug(f"Model loading process for {selected_model_key} finished (Success: {model_load_success}). Re-initializing video: {video_file_to_reinitialize}")
+                file_async.reinitialize_video_capture(video_file_to_reinitialize)
             
-            if success and root and root.winfo_exists():
-                # Reprocess current image if one is loaded
-                if (app_globals.current_uploaded_file_path_global and 
+            if model_load_success and root and root.winfo_exists():
+                # Reprocess current image if one is loaded (and not a video that was just reinitialized)
+                if not video_file_to_reinitialize and (app_globals.current_uploaded_file_path_global and 
                     app_globals.current_uploaded_file_path_global.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp', '.tiff'))):
                     
                     original_image_path = app_globals.current_uploaded_file_path_global
@@ -45,21 +57,17 @@ def run_model_load_in_thread(selected_model_key, stop_all_processing_logic_ref):
                             current_conf_thresh=app_globals.conf_threshold_global, current_iou_thresh=app_globals.iou_threshold_global
                         )
                         app_globals.current_processed_image_for_display = processed_img
-                        if ui_comps.get("video_display"):
+                        if ui_comps and ui_comps.get("video_display"):
                              ui_comps["video_display"].update_frame(processed_img)
                         print(f"Re-processed image with {selected_model_key}. Detected {detected_count} objects.")
-                
-                root.after(0, loading_manager.hide_loading_and_update_controls)
-            else:
-                root = refs.get_root()
-                if root and root.winfo_exists():
-                    root.after(0, loading_manager.hide_loading_and_update_controls)
-                log_debug(f"Model loading failed for {selected_model_key}")
+            elif not model_load_success:
+                log_debug(f"Model loading failed for {selected_model_key}. Video re-initialization (if applicable) was still attempted.")
                 
         except Exception as e:
             log_debug(f"Error in model loading task for {selected_model_key}: {e}", exc_info=True)
-            root = refs.get_root()
+        finally:
             if root and root.winfo_exists():
+                # Ensure UI controls are updated regardless of success/failure of model load or video re-init
                 root.after(0, loading_manager.hide_loading_and_update_controls)
     
     # Stop any ongoing processing before loading new model
