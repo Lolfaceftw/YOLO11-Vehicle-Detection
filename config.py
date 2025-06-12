@@ -2,23 +2,39 @@ import os
 
 # --- Configuration ---
 IS_DEBUG_MODE = False # Default to False, will be overridden by run_app.py if --debug is used
-DEBUG_LOG_FILE = 'debug.log'
+DEBUG_LOG_FILE = 'debug.log' # This will be created in the directory where run_app.py is executed.
 
+# Assuming run_app.py is in 'app/' and this config.py will also be in 'app/'
+# PROJECT_ROOT will be the parent of 'app/', e.g., 'Vehicle-detection-and-tracking-classwise-using-YOLO11/'
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-MODEL_DATA_PATH = os.path.join(PROJECT_ROOT, 'data') 
 
-if not os.path.isdir(MODEL_DATA_PATH):
-    MODEL_DATA_PATH = PROJECT_ROOT
+# Centralized model directory within the 'app' structure
+# os.path.dirname(__file__) will be 'app/' if this config.py is in 'app/'
+MODEL_DIR = os.path.join(os.path.dirname(__file__), 'models')
+
+# MODEL_DATA_PATH should be the absolute path to app/models
+MODEL_DATA_PATH = os.path.abspath(MODEL_DIR)
 
 
-YOLO_MODEL_FILENAME = 'yolo11x.pt'
-RTDETR_MODEL_FILENAME = 'rtdetr-x.pt' 
+YOLO_MODEL_FILENAME = 'yolo11x.pt' # Placeholder, actual file might not exist
+YOLO11S_SMALL_TRAINED_FILENAME = 'yolo11s-small_trained.pt'
+RTDETR_MODEL_FILENAME = 'rtdetr-x.pt'
 
 YOLO_MODEL_PATH = os.path.join(MODEL_DATA_PATH, YOLO_MODEL_FILENAME)
-RTDETR_MODEL_PATH = RTDETR_MODEL_FILENAME 
+YOLO11S_SMALL_TRAINED_PATH = os.path.join(MODEL_DATA_PATH, YOLO11S_SMALL_TRAINED_FILENAME)
+RTDETR_MODEL_PATH = os.path.join(MODEL_DATA_PATH, RTDETR_MODEL_FILENAME)
 
-YOLO_CLASS_FILTER_INDICES = [1, 2, 3, 5, 7] 
-DEFAULT_MODEL_KEY = "YOLOv11x"
+# Check if the model files actually exist, log if not (requires logger to be set up)
+# This is more for runtime check, not strictly config.
+# import logging # Would import app.utils.logger_setup later
+# if not os.path.exists(YOLO11S_SMALL_TRAINED_PATH):
+#     logging.warning(f"Model file not found: {YOLO11S_SMALL_TRAINED_PATH}")
+# if not os.path.exists(RTDETR_MODEL_PATH):
+#     logging.warning(f"Model file not found: {RTDETR_MODEL_PATH}")
+
+
+YOLO_CLASS_FILTER_INDICES = [1, 2, 3, 5, 7]
+DEFAULT_MODEL_KEY = "YOLOv11s_small" # Changed to reflect available model
 
 # --- Material Design Color System ---
 COLOR_PRIMARY = '#2196F3'         
